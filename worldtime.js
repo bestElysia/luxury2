@@ -115,7 +115,7 @@ const cityDatabase = [
 ];
 
 let currentCities = [];
-const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "amsterdam", "rome", "warsaw"];
+const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "manama", "jerusalem", "amsterdam", "rome", "warsaw"];
 let simulatedDate = null;
 let selectedCityId = null;
 const weatherCache = {};
