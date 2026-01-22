@@ -115,7 +115,7 @@ const cityDatabase = [
 ];
 
 let currentCities = [];
-const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "manama", "jerusalem", "amsterdam", "rome", "warsaw"];
+const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "amsterdam", "rome", "warsaw"];
 let simulatedDate = null;
 let selectedCityId = null;
 const weatherCache = {};
@@ -183,6 +183,19 @@ function init() {
     if (themeBtn) {
         themeBtn.addEventListener('click', toggleTheme);
     }
+
+    // 绑定全局点击事件：暂停背景动画
+    document.body.addEventListener('click', (e) => {
+        // 检查点击目标是否是交互元素或其子元素
+        const isInteractive = e.target.closest('.city-card, .main-card, .time-machine, .float-btn, .modal-content, .add-card');
+        // 检查是否处于动态背景模式
+        const isDynamicTheme = document.body.classList.contains('animate-bg');
+
+        // 如果点击的是空白处（非交互元素）且当前有动画
+        if (!isInteractive && isDynamicTheme) {
+            document.body.classList.toggle('bg-paused');
+        }
+    });
 }
 
 function initTheme() {
@@ -222,6 +235,7 @@ function applyTheme() {
 
     if (t.isDynamic) {
         document.body.classList.add('animate-bg');
+        document.body.classList.remove('bg-paused'); // 切换主题时默认恢复播放
     } else {
         document.body.classList.remove('animate-bg');
     }
