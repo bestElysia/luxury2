@@ -20,16 +20,31 @@ body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     background-color:var(--bg-color);
     background-image:var(--bg-image);
-    background-size:cover;
-    background-attachment:fixed; /* 背景固定，不随滚动条滚动 */
+    /* 核心修改：为了让背景动起来，我们需要把背景拉大 */
+    background-size: 400% 400%; 
+    background-attachment:fixed;
     margin:0;padding:20px;
     color:var(--text-main);
-    transition: background 0.5s ease; /* 切换背景时的丝滑过渡 */
+    transition: background 0.5s ease;
 }
+
+/* 定义背景流动的动画 */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 动态背景激活时添加这个类 */
+body.animate-bg {
+    animation: gradientAnimation 15s ease infinite;
+}
+
 .container{max-width:1200px;margin:0 auto;padding-bottom:100px}
-h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem;font-weight:800;transition: color 0.3s}
+h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem;font-weight:800;transition: color 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
 .tip{text-align:center;color:#7f8c8d;font-size:.9rem;margin-bottom:20px; text-shadow: 0 1px 2px rgba(255,255,255,0.5);}
-/* ... (保留原有的时间机样式) ... */
+
+/* 原有样式保持不变 */
 .time-machine{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:30px;background:#fff;padding:10px 20px;border-radius:50px;width:fit-content;margin-left:auto;margin-right:auto;box-shadow:var(--shadow)}
 .time-machine input{border:1px solid #ddd;padding:8px;border-radius:6px;color:#333;font-family:inherit}
 .time-machine button{background:#f0f2f5;border:none;padding:8px 15px;border-radius:20px;cursor:pointer;color:#555;font-weight:600;transition:all .2s}
@@ -37,7 +52,6 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 .time-machine button:hover:not(.active){background:#e6e6e6}
 .tm-label{font-size:.9rem;font-weight:700;color:#555}
 
-/* 主时钟卡片 */
 .main-clock-wrapper{display:flex;justify-content:center;margin-bottom:30px}
 .main-card{background:var(--card-bg);width:100%;max-width:600px;padding:30px;border-radius:16px;box-shadow:var(--shadow);text-align:center;border-top:5px solid var(--primary-color);position:relative;transition:border-color .3s}
 .main-card.simulating{border-top-color:#faad14}
@@ -46,7 +60,6 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 .main-card .label{font-size:1.2rem;font-weight:700;display:block;margin-bottom:5px;color:#34495e}
 .main-card .date{font-size:1rem;color:var(--text-sub);margin-top:8px}
 
-/* 网格布局 */
 .grid-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
 .city-card{background:var(--card-bg);border-radius:12px;padding:15px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between;position:relative;user-select:none;transition:all .2s ease;border:2px solid transparent;touch-action:pan-y;overflow:hidden;cursor:pointer}
 .city-card:hover{transform:translateY(-4px);box-shadow:0 10px 15px rgba(0,0,0,.08);border-color:#e6f7ff}
@@ -56,12 +69,10 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 .add-card{display:flex;justify-content:center;align-items:center;cursor:pointer;border:2px dashed #d9d9d9;background:rgba(255,255,255,.5);min-height:160px;border-radius:12px;transition:all .3s}
 .add-card:active{background:#e6f7ff;border-color:#1890ff}.add-icon{font-size:2.5rem;color:#ccc;font-weight:300}.add-card:active .add-icon{color:#1890ff}
 
-/* 卡片状态颜色 */
 .city-card.active-green{background-color:#f6ffed!important;border-color:#95de64!important;box-shadow:0 4px 12px rgba(82,196,26,.15)}
 .city-card.active-grey{background-color:#f5f5f5!important;border-color:#d9d9d9!important;opacity:.85}
 .city-card.active-grey .city-time{color:#8c8c8c}.city-card.active-grey .country-row-text{color:#595959}
 
-/* 城市卡片内部 */
 .city-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid #f0f0f0;padding-bottom:8px;pointer-events:none;position:relative;z-index:2;min-height:44px}
 .header-left{display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0;margin-right:8px}
 .flag{font-size:1.6rem;line-height:1.1;margin-top:1px;flex-shrink:0}
@@ -82,7 +93,6 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 .ripple.ripple-green{background:rgba(82,196,26,.3)}.ripple.ripple-grey{background:rgba(0,0,0,.1)}
 @keyframes ripple{to{transform:scale(4);opacity:0}}
 
-/* 弹窗 */
 .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:2000;opacity:0;transition:opacity .2s;backdrop-filter:blur(2px)}
 .modal-overlay.active{display:flex;opacity:1}
 .modal-content{width:90%;max-width:450px;padding:25px;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);transform:scale(.95);transition:transform .2s;display:flex;flex-direction:column;max-height:80vh}
@@ -95,7 +105,6 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 .btn-group{display:flex;gap:15px;margin-top:auto}.btn{flex:1;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}
 .btn-cancel{background:#f5f5f5;color:#666}.btn-confirm{background:var(--primary-color);color:#fff}.btn-confirm:disabled{background:#ccc;cursor:not-allowed}
 
-/* 悬浮按钮组 */
 .float-btn-group {
     position: absolute;
     top: 20px;
@@ -121,7 +130,7 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
     border: none;
     cursor: pointer;
     width: fit-content;
-    margin-left: auto; /* 靠右对齐 */
+    margin-left: auto;
 }
 .float-btn:hover {
     transform: translateY(-2px);
@@ -134,7 +143,6 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
     .grid-container{grid-template-columns:1fr}
     .delete-btn{opacity:1;background:#f5f5f5}
     .time-machine{width:90%;flex-wrap:wrap;border-radius:16px}
-    /* 移动端调整按钮位置，不遮挡标题 */
     .float-btn-group {
         position: relative;
         top: auto; right: auto;
@@ -190,7 +198,7 @@ h1{text-align:center;color:var(--title-color);margin-bottom:8px;font-size:1.8rem
 </div>
 </div>
 <script>
-// 城市数据 (保持不变)
+// 城市数据
 const cityDatabase=[
 {id:"new_york",name:"纽约 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"niuyue new york us usa meiguo ny",lat:40.71,lng:-74.01},
 {id:"washington_dc",name:"华盛顿 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"huashengdun washington dc us usa meiguo",lat:38.90,lng:-77.04},
@@ -308,12 +316,12 @@ let currentCities=[];const initialIds=["new_york","los_angeles","paris","london"
 const weatherCache={};
 const CACHE_DURATION=1200000;
 
-// --- 主题功能 (新增) ---
+// --- 主题功能 (升级版) ---
 const themes = [
-    { name: "☁️ 云端", color: "#f5f7fa", image: "none", titleColor: "#2c3e50" },
-    { name: "🌌 深夜", color: "#1a1a1a", image: "none", titleColor: "#ffffff" },
-    { name: "🌅 晨曦", color: "#a1c4fd", image: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)", titleColor: "#2c3e50" },
-    { name: "🌊 极光", color: "#373b44", image: "linear-gradient(to right, #4286f4, #373b44)", titleColor: "#ffffff" }
+    { name: "☁️ 云端", color: "#f5f7fa", image: "none", titleColor: "#2c3e50", isDynamic: false },
+    { name: "🌊 动态·海洋", color: "#2E3192", image: "linear-gradient(135deg, #00c6fb 0%, #005bea 100%)", titleColor: "#fff", isDynamic: true },
+    { name: "🌅 动态·晚霞", color: "#fa709a", image: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)", titleColor: "#fff", isDynamic: true },
+    { name: "💜 动态·梦境", color: "#a18cd1", image: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)", titleColor: "#fff", isDynamic: true }
 ];
 let currentThemeIndex = 0;
 
@@ -338,7 +346,13 @@ function applyTheme() {
     document.documentElement.style.setProperty('--bg-image', t.image);
     document.documentElement.style.setProperty('--title-color', t.titleColor);
     
-    // 更新按钮文字
+    // 动态背景处理
+    if (t.isDynamic) {
+        document.body.classList.add('animate-bg');
+    } else {
+        document.body.classList.remove('animate-bg');
+    }
+    
     const btn = document.getElementById('themeBtn');
     if(btn) btn.innerText = `🎨 换肤: ${t.name.split(' ')[1]}`;
 }
@@ -349,7 +363,7 @@ function init(){
     renderGrid();
     initSortable();
     initTimeMachine();
-    initTheme(); // 加载主题
+    initTheme(); 
     updateAllClocks();
     setInterval(updateAllClocks,1e3);
     setInterval(refreshAllWeather, 1800000);
