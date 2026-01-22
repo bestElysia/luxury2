@@ -1,1 +1,226 @@
-1
+<!doctype html>
+<html lang=zh-CN>
+<head>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>世界时间 & 天气</title>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js></script>
+<style>:root{--bg-color:#f5f7fa;--card-bg:#ffffff;--primary-color:#1890ff;--text-main:#2c3e50;--text-sub:#95a5a6;--shadow:0 4px 6px rgba(0,0,0,0.02),0 1px 3px rgba(0,0,0,0.05)}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background-color:var(--bg-color);margin:0;padding:20px;color:var(--text-main);overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent}.container{max-width:1200px;margin:0 auto;padding-bottom:100px}h1{text-align:center;color:#2c3e50;margin-bottom:8px;font-size:1.8rem;font-weight:800}.tip{text-align:center;color:#7f8c8d;font-size:.9rem;margin-bottom:20px}.time-machine{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:30px;background:#fff;padding:10px 20px;border-radius:50px;width:fit-content;margin-left:auto;margin-right:auto;box-shadow:var(--shadow)}.time-machine input{border:1px solid #ddd;padding:8px;border-radius:6px;color:#333;font-family:inherit}.time-machine button{background:#f0f2f5;border:none;padding:8px 15px;border-radius:20px;cursor:pointer;color:#555;font-weight:600;transition:all .2s}.time-machine button.active{background:var(--primary-color);color:#fff}.time-machine button:hover:not(.active){background:#e6e6e6}.tm-label{font-size:.9rem;font-weight:700;color:#555}.main-clock-wrapper{display:flex;justify-content:center;margin-bottom:30px}.main-card{background:var(--card-bg);width:100%;max-width:600px;padding:30px;border-radius:16px;box-shadow:var(--shadow);text-align:center;border-top:5px solid var(--primary-color);position:relative;transition:border-color .3s}.main-card.simulating{border-top-color:#faad14}.main-card .time{font-size:3.5rem;font-weight:700;color:var(--primary-color);line-height:1.1;font-variant-numeric:tabular-nums;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}.main-card.simulating .time{color:#faad14}.main-card .label{font-size:1.2rem;font-weight:700;display:block;margin-bottom:5px;color:#34495e}.main-card .date{font-size:1rem;color:var(--text-sub);margin-top:8px}.grid-container{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}.city-card{background:var(--card-bg);border-radius:12px;padding:15px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:space-between;position:relative;user-select:none;transition:all .2s ease;border:2px solid transparent;touch-action:pan-y;overflow:hidden;cursor:pointer}.city-card:hover{transform:translateY(-4px);box-shadow:0 10px 15px rgba(0,0,0,.08);border-color:#e6f7ff}.sortable-ghost{opacity:.4;background:#e6f7ff;border:1px dashed #1890ff}.sortable-drag{cursor:grabbing;opacity:1;background:#fff;box-shadow:0 15px 30px rgba(0,0,0,.15);transform:scale(1.02);z-index:1000}.delete-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:#f0f2f5;color:#999;text-align:center;line-height:26px;cursor:pointer;font-size:18px;opacity:0;transition:all .2s;z-index:10}.city-card:hover .delete-btn{opacity:1}.delete-btn:hover{background:#ff4d4f;color:#fff}.add-card{display:flex;justify-content:center;align-items:center;cursor:pointer;border:2px dashed #d9d9d9;background:rgba(255,255,255,.5);min-height:160px;border-radius:12px;transition:all .3s}.add-card:active{background:#e6f7ff;border-color:#1890ff}.add-icon{font-size:2.5rem;color:#ccc;font-weight:300}.add-card:active .add-icon{color:#1890ff}.city-card.active-green{background-color:#f6ffed!important;border-color:#95de64!important;box-shadow:0 4px 12px rgba(82,196,26,.15)}.city-card.active-grey{background-color:#f5f5f5!important;border-color:#d9d9d9!important;opacity:.85}.city-card.active-grey .city-time{color:#8c8c8c}.city-card.active-grey .country-row-text{color:#595959}.city-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid #f0f0f0;padding-bottom:8px;pointer-events:none;position:relative;z-index:2;min-height:44px}.header-left{display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0;margin-right:8px}.flag{font-size:1.6rem;line-height:1.1;margin-top:1px;flex-shrink:0}.city-text-col{display:flex;flex-direction:column;justify-content:center;overflow:hidden}.country-row-top{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}.country-row-text{font-size:1.1rem;font-weight:700;color:#2c3e50;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.phone-text-plain{font-size:1.1rem;font-weight:700;color:#2c3e50;font-family:inherit;opacity:.4}.city-subtext{font-size:.85rem;color:#95a5a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}.status-dot-wrapper{display:flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;padding:4px 8px;border-radius:12px;background:#f5f5f5;flex-shrink:0;white-space:nowrap;margin-top:2px}.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot-green{background-color:#52c41a;box-shadow:0 0 4px #52c41a}.dot-grey{background-color:#d9d9d9}.status-text{color:#666}.city-time{font-size:2.4rem;font-weight:700;margin-bottom:4px;font-variant-numeric:tabular-nums;pointer-events:none;color:#2c3e50;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;position:relative;z-index:2;transition:color .2s}.city-info-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;pointer-events:none;position:relative;z-index:2}.city-date{font-size:.85rem;color:#95a5a6;flex:1}.weather-wrapper{font-size:.85rem;color:#555;font-weight:600;display:flex;align-items:center;gap:4px;margin-right:10px}.diff-tag{padding:4px 10px;font-size:.8rem;border-radius:4px;font-weight:600}.ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple .6s linear;pointer-events:none;z-index:1}.ripple.ripple-green{background:rgba(82,196,26,.3)}.ripple.ripple-grey{background:rgba(0,0,0,.1)}@keyframes ripple{to{transform:scale(4);opacity:0}}.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:2000;opacity:0;transition:opacity .2s;backdrop-filter:blur(2px)}.modal-overlay.active{display:flex;opacity:1}.modal-content{width:90%;max-width:450px;padding:25px;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);transform:scale(.95);transition:transform .2s;display:flex;flex-direction:column;max-height:80vh}.modal-overlay.active .modal-content{transform:scale(1)}.modal-title{font-size:1.2rem;font-weight:700;margin-bottom:15px;text-align:center;color:#333}.search-box{margin-bottom:10px}.search-input{width:100%;padding:12px;border-radius:8px;border:1px solid #d9d9d9;font-size:1rem;outline:0;box-sizing:border-box;transition:border-color .2s}.search-input:focus{border-color:var(--primary-color)}.city-list{flex:1;overflow-y:auto;border:1px solid #f0f0f0;border-radius:8px;margin-bottom:15px;background:#fafafa}.city-item{padding:10px 15px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}.city-item:last-child{border-bottom:none}.city-item:hover{background:#e6f7ff}.city-item.selected{background:#e6f7ff;color:var(--primary-color);font-weight:600}.city-item-name{font-size:.95rem}.city-item-flag{margin-right:8px;font-size:1.2rem}.btn-group{display:flex;gap:15px;margin-top:auto}.btn{flex:1;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer}.btn-cancel{background:#f5f5f5;color:#666}.btn-confirm{background:var(--primary-color);color:#fff}.btn-confirm:disabled{background:#ccc;cursor:not-allowed}
+.doubao-btn{position:absolute;top:20px;right:20px;background:#fff;color:var(--primary-color);text-decoration:none;padding:8px 16px;border-radius:20px;font-size:.9rem;font-weight:600;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;z-index:100;display:flex;align-items:center;gap:4px}.doubao-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}.doubao-btn:active{transform:translateY(0)}.doubao-icon{font-size:1rem}@media (max-width:600px){.main-card .time{font-size:3rem}.grid-container{grid-template-columns:1fr}.delete-btn{opacity:1;background:#f5f5f5}.time-machine{width:90%;flex-wrap:wrap;border-radius:16px}.doubao-btn{position:relative;top:auto;right:auto;display:table;margin:0 auto 15px auto}}</style>
+</head>
+<body>
+<a href="https://www.doubao.com/chat/?channel=browser_landing_page" target="_blank" class="doubao-btn">
+    <span class="doubao-icon">(✿◡‿◡)</span> 豆包
+</a>
+
+<div class=container>
+<h1>世界时间 & 天气</h1>
+<div class=tip>长按拖拽排序 · 点击卡片切换标记状态</div>
+<div class=time-machine>
+<span class=tm-label>📅 预约推算:</span>
+<input type=datetime-local id=simTimeInput>
+<button id=resetTimeBtn class=active onclick=resetRealTime()>回到现在</button>
+</div>
+<div class=main-clock-wrapper>
+<div class=main-card id=mainCard>
+<span class=label>🇨🇳 北京 (基准时间)</span>
+<div class=time id=bj-time>00:00:00</div>
+<div class=date id=bj-date>...</div>
+</div>
+</div>
+<div class=grid-container id=clocks-grid>
+</div>
+</div>
+<div class=modal-overlay id=addModal>
+<div class=modal-content>
+<div class=modal-title>添加新城市</div>
+<div class=search-box>
+<input class=search-input id=citySearch placeholder="搜索: 城市名 / 拼音 / 国家 / 区号 (如: 86, US, Tokyo)" oninput=filterCities()>
+</div>
+<div class=city-list id=cityListContainer>
+</div>
+<div class=btn-group>
+<button class="btn btn-cancel" onclick=closeModal()>取消</button>
+<button class="btn btn-confirm" id=confirmBtn onclick=confirmAdd() disabled>确认添加</button>
+</div>
+</div>
+</div>
+<script>
+// 已更新经纬度数据
+const cityDatabase=[
+{id:"new_york",name:"纽约 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"niuyue new york us usa meiguo ny",lat:40.71,lng:-74.01},
+{id:"washington_dc",name:"华盛顿 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"huashengdun washington dc us usa meiguo",lat:38.90,lng:-77.04},
+{id:"boston",name:"波士顿 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"boshidun boston us usa meiguo",lat:42.36,lng:-71.05},
+{id:"miami",name:"迈阿密 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"maiami miami us usa meiguo",lat:25.76,lng:-80.19},
+{id:"atlanta",name:"亚特兰大 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"yatelanda atlanta us usa meiguo",lat:33.75,lng:-84.39},
+{id:"philadelphia",name:"费城 (美东)",flag:"🇺🇸",zone:"America/New_York",phone:"+1",tags:"feicheng philadelphia us usa meiguo",lat:39.95,lng:-75.16},
+{id:"chicago",name:"芝加哥 (美中)",flag:"🇺🇸",zone:"America/Chicago",phone:"+1",tags:"zhijiage chicago us usa meiguo",lat:41.88,lng:-87.63},
+{id:"houston",name:"休斯顿 (美中)",flag:"🇺🇸",zone:"America/Chicago",phone:"+1",tags:"xiusidun houston us usa meiguo",lat:29.76,lng:-95.37},
+{id:"dallas",name:"达拉斯 (美中)",flag:"🇺🇸",zone:"America/Chicago",phone:"+1",tags:"dalasi dallas us usa meiguo",lat:32.78,lng:-96.80},
+{id:"new_orleans",name:"新奥尔良 (美中)",flag:"🇺🇸",zone:"America/Chicago",phone:"+1",tags:"xinaoerliang new orleans us usa meiguo",lat:29.95,lng:-90.07},
+{id:"denver",name:"丹佛 (山地)",flag:"🇺🇸",zone:"America/Denver",phone:"+1",tags:"danfo denver us usa meiguo",lat:39.74,lng:-104.99},
+{id:"salt_lake_city",name:"盐湖城 (山地)",flag:"🇺🇸",zone:"America/Denver",phone:"+1",tags:"yanhucheng salt lake city us usa meiguo",lat:40.76,lng:-111.89},
+{id:"phoenix",name:"凤凰城 (山地)",flag:"🇺🇸",zone:"America/Phoenix",phone:"+1",tags:"fenghuangcheng phoenix arizona us usa meiguo",lat:33.45,lng:-112.07},
+{id:"los_angeles",name:"洛杉矶 (美西)",flag:"🇺🇸",zone:"America/Los_Angeles",phone:"+1",tags:"luoshanji los angeles la us usa meiguo",lat:34.05,lng:-118.24},
+{id:"san_francisco",name:"旧金山 (美西)",flag:"🇺🇸",zone:"America/Los_Angeles",phone:"+1",tags:"jiujinshan san francisco sf us usa meiguo",lat:37.77,lng:-122.42},
+{id:"seattle",name:"西雅图 (美西)",flag:"🇺🇸",zone:"America/Los_Angeles",phone:"+1",tags:"xiyatu seattle us usa meiguo",lat:47.61,lng:-122.33},
+{id:"las_vegas",name:"拉斯维加斯 (美西)",flag:"🇺🇸",zone:"America/Los_Angeles",phone:"+1",tags:"lasiweijiasi las vegas us usa meiguo",lat:36.17,lng:-115.14},
+{id:"san_diego",name:"圣地亚哥 (美西)",flag:"🇺🇸",zone:"America/Los_Angeles",phone:"+1",tags:"shengdiyage san diego us usa meiguo",lat:32.72,lng:-117.16},
+{id:"anchorage",name:"安克雷奇 (阿拉斯加)",flag:"🇺🇸",zone:"America/Anchorage",phone:"+1",tags:"ankeleiqi anchorage alaska us usa meiguo",lat:61.22,lng:-149.90},
+{id:"honolulu",name:"檀香山 (夏威夷)",flag:"🇺🇸",zone:"Pacific/Honolulu",phone:"+1",tags:"tanxiangshan honolulu hawaii us usa meiguo",lat:21.31,lng:-157.86},
+{id:"toronto",name:"多伦多 (加东)",flag:"🇨🇦",zone:"America/Toronto",phone:"+1",tags:"duolunduo toronto ca canada jianada",lat:43.65,lng:-79.38},
+{id:"ottawa",name:"渥太华 (加东)",flag:"🇨🇦",zone:"America/Toronto",phone:"+1",tags:"wotaihua ottawa ca canada jianada",lat:45.42,lng:-75.70},
+{id:"montreal",name:"蒙特利尔 (加东)",flag:"🇨🇦",zone:"America/Toronto",phone:"+1",tags:"mengtelier montreal ca canada jianada",lat:45.50,lng:-73.57},
+{id:"vancouver",name:"温哥华 (加西)",flag:"🇨🇦",zone:"America/Vancouver",phone:"+1",tags:"wengehua vancouver ca canada jianada",lat:49.28,lng:-123.12},
+{id:"mexico_city",name:"墨西哥城 (墨西哥)",flag:"🇲🇽",zone:"America/Mexico_City",phone:"+52",tags:"moxigecheng mexico city mx moxige",lat:19.43,lng:-99.13},
+{id:"havana",name:"哈瓦那 (古巴)",flag:"🇨🇺",zone:"America/Havana",phone:"+53",tags:"hawana havana cuba guba",lat:23.11,lng:-82.37},
+{id:"panama_city",name:"巴拿马城 (巴拿马)",flag:"🇵🇦",zone:"America/Panama",phone:"+507",tags:"banamacheng panama",lat:8.98,lng:-79.52},
+{id:"san_jose_cr",name:"圣何塞 (哥斯达黎加)",flag:"🇨🇷",zone:"America/Costa_Rica",phone:"+506",tags:"shenghesai san jose costa rica gesidalijia",lat:9.93,lng:-84.09},
+{id:"tokyo",name:"东京 (日本)",flag:"🇯🇵",zone:"Asia/Tokyo",phone:"+81",tags:"dongjing tokyo jp japan riben",lat:35.69,lng:139.69},
+{id:"seoul",name:"首尔 (韩国)",flag:"🇰🇷",zone:"Asia/Seoul",phone:"+82",tags:"shouer seoul kr korea hanguo",lat:37.57,lng:126.98},
+{id:"pyongyang",name:"平壤 (朝鲜)",flag:"🇰🇵",zone:"Asia/Pyongyang",phone:"+850",tags:"pingrang pyongyang kp north korea chaoxian",lat:39.03,lng:125.76},
+{id:"beijing",name:"北京 (中国)",flag:"🇨🇳",zone:"Asia/Shanghai",phone:"+86",tags:"beijing china cn zhongguo",lat:39.90,lng:116.41},
+{id:"taipei",name:"台北 (中国台湾)",flag:"🇨🇳",zone:"Asia/Taipei",phone:"+886",tags:"taibei taipei tw taiwan",lat:25.03,lng:121.57},
+{id:"hongkong",name:"香港 (中国)",flag:"🇭🇰",zone:"Asia/Hong_Kong",phone:"+852",tags:"xianggang hong kong hk",lat:22.32,lng:114.17},
+{id:"bangkok",name:"曼谷 (泰国)",flag:"🇹🇭",zone:"Asia/Bangkok",phone:"+66",tags:"mangu bangkok th thailand taiguo",lat:13.75,lng:100.50},
+{id:"hanoi",name:"河内 (越南)",flag:"🇻🇳",zone:"Asia/Ho_Chi_Minh",phone:"+84",tags:"henei hanoi vn vietnam yuenan",lat:21.02,lng:105.83},
+{id:"jakarta",name:"雅加达 (印尼)",flag:"🇮🇩",zone:"Asia/Jakarta",phone:"+62",tags:"yajiada jakarta id indonesia yinni",lat:-6.20,lng:106.85},
+{id:"kuala_lumpur",name:"吉隆坡 (大马)",flag:"🇲🇾",zone:"Asia/Kuala_Lumpur",phone:"+60",tags:"jilongpo kuala lumpur my malaysia malaixiya",lat:3.14,lng:101.69},
+{id:"singapore",name:"新加坡",flag:"🇸🇬",zone:"Asia/Singapore",phone:"+65",tags:"xinjiapo singapore sg",lat:1.35,lng:103.82},
+{id:"manila",name:"马尼拉 (菲律宾)",flag:"🇵🇭",zone:"Asia/Manila",phone:"+63",tags:"manila manila ph philippines feilubin",lat:14.60,lng:120.98},
+{id:"new_delhi",name:"新德里 (印度)",flag:"🇮🇳",zone:"Asia/Kolkata",phone:"+91",tags:"xindeli new delhi in india yindu",lat:28.61,lng:77.21},
+{id:"mumbai",name:"孟买 (印度)",flag:"🇮🇳",zone:"Asia/Kolkata",phone:"+91",tags:"mengmai mumbai in india yindu",lat:19.08,lng:72.88},
+{id:"dhaka",name:"达卡 (孟加拉)",flag:"🇧🇩",zone:"Asia/Dhaka",phone:"+880",tags:"daka dhaka bd bangladesh mengjiala",lat:23.81,lng:90.41},
+{id:"kathmandu",name:"加德满都 (尼泊尔)",flag:"🇳🇵",zone:"Asia/Kathmandu",phone:"+977",tags:"jiademandou kathmandu np nepal niboer",lat:27.72,lng:85.32},
+{id:"islamabad",name:"伊斯兰堡 (巴基斯坦)",flag:"🇵🇰",zone:"Asia/Karachi",phone:"+92",tags:"yisilanbao islamabad pk pakistan bajisitan",lat:33.68,lng:73.04},
+{id:"kabul",name:"喀布尔 (阿富汗)",flag:"🇦🇫",zone:"Asia/Kabul",phone:"+93",tags:"kabuer kabul af afghanistan afuhan",lat:34.56,lng:69.20},
+{id:"tehran",name:"德黑兰 (伊朗)",flag:"🇮🇷",zone:"Asia/Tehran",phone:"+98",tags:"deheilan tehran ir iran yilang",lat:35.69,lng:51.39},
+{id:"dubai",name:"迪拜 (阿联酋)",flag:"🇦🇪",zone:"Asia/Dubai",phone:"+971",tags:"dibai dubai ae uae alianqiu",lat:25.20,lng:55.27},
+{id:"abudhabi",name:"阿布扎比 (阿联酋)",flag:"🇦🇪",zone:"Asia/Dubai",phone:"+971",tags:"abuzhabi abu dhabi ae uae alianqiu",lat:24.45,lng:54.37},
+{id:"manama",name:"麦纳麦 (巴林)",flag:"🇧🇭",zone:"Asia/Bahrain",phone:"+973",tags:"mainamai manama bh bahrain balin",lat:26.23,lng:50.59},
+{id:"riyadh",name:"利雅得 (沙特)",flag:"🇸🇦",zone:"Asia/Riyadh",phone:"+966",tags:"liyade riyadh sa saudi arabia shate",lat:24.71,lng:46.68},
+{id:"doha",name:"多哈 (卡塔尔)",flag:"🇶🇦",zone:"Asia/Qatar",phone:"+974",tags:"duoha doha qa qatar kataer",lat:25.29,lng:51.53},
+{id:"kuwait_city",name:"科威特城 (科威特)",flag:"🇰🇼",zone:"Asia/Kuwait",phone:"+965",tags:"keweitecheng kuwait kw keweite",lat:29.37,lng:47.98},
+{id:"jerusalem",name:"耶路撒冷 (以色列)",flag:"🇮🇱",zone:"Asia/Jerusalem",phone:"+972",tags:"yelusaleng jerusalem il israel yiselie",lat:31.77,lng:35.21},
+{id:"ankara",name:"安卡拉 (土耳其)",flag:"🇹🇷",zone:"Europe/Istanbul",phone:"+90",tags:"ankala ankara tr turkey tuerqi",lat:39.93,lng:32.85},
+{id:"istanbul",name:"伊斯坦布尔 (土耳其)",flag:"🇹🇷",zone:"Europe/Istanbul",phone:"+90",tags:"yisitanbuer istanbul tr turkey tuerqi",lat:41.01,lng:28.98},
+{id:"baku",name:"巴库 (阿塞拜疆)",flag:"🇦🇿",zone:"Asia/Baku",phone:"+994",tags:"baku baku az azerbaijan asaibaijiang",lat:40.41,lng:49.87},
+{id:"tashkent",name:"塔什干 (乌兹别克)",flag:"🇺🇿",zone:"Asia/Tashkent",phone:"+998",tags:"tashigan tashkent uz uzbekistan wuzibieke",lat:41.30,lng:69.24},
+{id:"astana",name:"阿斯塔纳 (哈萨克)",flag:"🇰🇿",zone:"Asia/Almaty",phone:"+7",tags:"asitana astana kz kazakhstan hasake",lat:51.16,lng:71.47},
+{id:"ulaanbaatar",name:"乌兰巴托 (蒙古)",flag:"🇲🇳",zone:"Asia/Ulaanbaatar",phone:"+976",tags:"wulanbatuo ulaanbaatar mn mongolia menggu",lat:47.92,lng:106.92},
+{id:"london",name:"伦敦 (英国)",flag:"🇬🇧",zone:"Europe/London",phone:"+44",tags:"lundun london uk gb united kingdom yingguo",lat:51.51,lng:-0.13},
+{id:"paris",name:"巴黎 (法国)",flag:"🇫🇷",zone:"Europe/Paris",phone:"+33",tags:"bali paris fr france faguo",lat:48.86,lng:2.35},
+{id:"berlin",name:"柏林 (德国)",flag:"🇩🇪",zone:"Europe/Berlin",phone:"+49",tags:"bolin berlin de germany deguo",lat:52.52,lng:13.41},
+{id:"frankfurt",name:"法兰克福 (德国)",flag:"🇩🇪",zone:"Europe/Berlin",phone:"+49",tags:"falankefu frankfurt de germany deguo",lat:50.11,lng:8.68},
+{id:"rome",name:"罗马 (意大利)",flag:"🇮🇹",zone:"Europe/Rome",phone:"+39",tags:"luoma rome it italy yidali",lat:41.90,lng:12.50},
+{id:"milan",name:"米兰 (意大利)",flag:"🇮🇹",zone:"Europe/Rome",phone:"+39",tags:"milan milan it italy yidali",lat:45.46,lng:9.19},
+{id:"madrid",name:"马德里 (西班牙)",flag:"🇪🇸",zone:"Europe/Madrid",phone:"+34",tags:"madeli madrid es spain xibanya",lat:40.42,lng:-3.70},
+{id:"barcelona",name:"巴塞罗那 (西班牙)",flag:"🇪🇸",zone:"Europe/Madrid",phone:"+34",tags:"basailuona barcelona es spain xibanya",lat:41.39,lng:2.17},
+{id:"lisbon",name:"里斯本 (葡萄牙)",flag:"🇵🇹",zone:"Europe/Lisbon",phone:"+351",tags:"lisiben lisbon pt portugal putaoya",lat:38.72,lng:-9.14},
+{id:"amsterdam",name:"阿姆斯特丹 (荷兰)",flag:"🇳🇱",zone:"Europe/Amsterdam",phone:"+31",tags:"amusitedan amsterdam nl netherlands helan",lat:52.37,lng:4.89},
+{id:"brussels",name:"布鲁塞尔 (比利时)",flag:"🇧🇪",zone:"Europe/Brussels",phone:"+32",tags:"bulusaier brussels be belgium bilishi",lat:50.85,lng:4.35},
+{id:"vienna",name:"维也纳 (奥地利)",flag:"🇦🇹",zone:"Europe/Vienna",phone:"+43",tags:"weiyena vienna at austria aodili",lat:48.21,lng:16.37},
+{id:"zurich",name:"苏黎世 (瑞士)",flag:"🇨🇭",zone:"Europe/Zurich",phone:"+41",tags:"sulishi zurich ch switzerland ruishi",lat:47.38,lng:8.54},
+{id:"geneva",name:"日内瓦 (瑞士)",flag:"🇨🇭",zone:"Europe/Zurich",phone:"+41",tags:"rineiwa geneva ch switzerland ruishi",lat:46.20,lng:6.14},
+{id:"prague",name:"布拉格 (捷克)",flag:"🇨🇿",zone:"Europe/Prague",phone:"+420",tags:"bulage prague cz czech jieke",lat:50.08,lng:14.44},
+{id:"budapest",name:"布达佩斯 (匈牙利)",flag:"🇭🇺",zone:"Europe/Budapest",phone:"+36",tags:"budapeisi budapest hu hungary xiongyali",lat:47.50,lng:19.04},
+{id:"warsaw",name:"华沙 (波兰)",flag:"🇵🇱",zone:"Europe/Warsaw",phone:"+48",tags:"huasha warsaw pl poland bolan",lat:52.23,lng:21.01},
+{id:"copenhagen",name:"哥本哈根 (丹麦)",flag:"🇩🇰",zone:"Europe/Copenhagen",phone:"+45",tags:"gebenhagen copenhagen dk denmark danmai",lat:55.68,lng:12.57},
+{id:"oslo",name:"奥斯陆 (挪威)",flag:"🇳🇴",zone:"Europe/Oslo",phone:"+47",tags:"aosilu oslo no norway nuowei",lat:59.91,lng:10.75},
+{id:"stockholm",name:"斯德哥尔摩 (瑞典)",flag:"🇸🇪",zone:"Europe/Stockholm",phone:"+46",tags:"sidegeermo stockholm se sweden ruidian",lat:59.33,lng:18.06},
+{id:"helsinki",name:"赫尔辛基 (芬兰)",flag:"🇫🇮",zone:"Europe/Helsinki",phone:"+358",tags:"heerxinji helsinki fi finland fenlan",lat:60.17,lng:24.94},
+{id:"reykjavik",name:"雷克雅未克 (冰岛)",flag:"🇮🇸",zone:"Atlantic/Reykjavik",phone:"+354",tags:"leikeyaweike reykjavik is iceland bingdao",lat:64.14,lng:-21.94},
+{id:"dublin",name:"都柏林 (爱尔兰)",flag:"🇮🇪",zone:"Europe/Dublin",phone:"+353",tags:"doubolin dublin ie ireland aierlan",lat:53.35,lng:-6.26},
+{id:"athens",name:"雅典 (希腊)",flag:"🇬🇷",zone:"Europe/Athens",phone:"+30",tags:"yadian athens gr greece xila",lat:37.98,lng:23.73},
+{id:"moscow",name:"莫斯科 (俄罗斯)",flag:"🇷🇺",zone:"Europe/Moscow",phone:"+7",tags:"mosike moscow ru russia eluosi",lat:55.75,lng:37.62},
+{id:"kyiv",name:"基辅 (乌克兰)",flag:"🇺🇦",zone:"Europe/Kyiv",phone:"+380",tags:"jifu kyiv ua ukraine wukelan",lat:50.45,lng:30.52},
+{id:"bucharest",name:"布加勒斯特 (罗马尼亚)",flag:"🇷🇴",zone:"Europe/Bucharest",phone:"+40",tags:"bujialesite bucharest ro romania luomaniya",lat:44.43,lng:26.10},
+{id:"brasilia",name:"巴西利亚 (巴西)",flag:"🇧🇷",zone:"America/Sao_Paulo",phone:"+55",tags:"baxiliya brasilia br brazil baxi",lat:-15.78,lng:-47.93},
+{id:"sao_paulo",name:"圣保罗 (巴西)",flag:"🇧🇷",zone:"America/Sao_Paulo",phone:"+55",tags:"shengbaoluo sao paulo br brazil baxi",lat:-23.55,lng:-46.63},
+{id:"rio",name:"里约 (巴西)",flag:"🇧🇷",zone:"America/Sao_Paulo",phone:"+55",tags:"liyue rio de janeiro br brazil baxi",lat:-22.91,lng:-43.17},
+{id:"buenos_aires",name:"布宜诺斯 (阿根廷)",flag:"🇦🇷",zone:"America/Argentina/Buenos_Aires",phone:"+54",tags:"buyinuosi buenos aires ar argentina agenting",lat:-34.61,lng:-58.38},
+{id:"santiago",name:"圣地亚哥 (智利)",flag:"🇨🇱",zone:"America/Santiago",phone:"+56",tags:"shengdiyage santiago cl chile zhili",lat:-33.45,lng:-70.67},
+{id:"bogota",name:"波哥大 (哥伦比亚)",flag:"🇨🇴",zone:"America/Bogota",phone:"+57",tags:"bogeda bogota co colombia gelunbiya",lat:4.61,lng:-74.08},
+{id:"lima",name:"利马 (秘鲁)",flag:"🇵🇪",zone:"America/Lima",phone:"+51",tags:"lima lima pe peru bilu",lat:-12.04,lng:-77.04},
+{id:"quito",name:"基多 (厄瓜多尔)",flag:"🇪🇨",zone:"America/Guayaquil",phone:"+593",tags:"jiduo quito ec ecuador eguaduoer",lat:-0.18,lng:-78.47},
+{id:"canberra",name:"堪培拉 (澳洲)",flag:"🇦🇺",zone:"Australia/Sydney",phone:"+61",tags:"kanpeila canberra au australia aozhou",lat:-35.28,lng:149.13},
+{id:"sydney",name:"悉尼 (澳洲)",flag:"🇦🇺",zone:"Australia/Sydney",phone:"+61",tags:"xini sydney au australia aozhou",lat:-33.87,lng:151.21},
+{id:"melbourne",name:"墨尔本 (澳洲)",flag:"🇦🇺",zone:"Australia/Melbourne",phone:"+61",tags:"moerben melbourne au australia aozhou",lat:-37.81,lng:144.96},
+{id:"brisbane",name:"布里斯班 (澳洲)",flag:"🇦🇺",zone:"Australia/Brisbane",phone:"+61",tags:"bulisiban brisbane au australia aozhou",lat:-27.47,lng:153.03},
+{id:"adelaide",name:"阿德莱德 (澳洲)",flag:"🇦🇺",zone:"Australia/Adelaide",phone:"+61",tags:"adelaide adelaide au australia aozhou",lat:-34.93,lng:138.60},
+{id:"perth",name:"珀斯 (澳洲)",flag:"🇦🇺",zone:"Australia/Perth",phone:"+61",tags:"posi perth au australia aozhou",lat:-31.95,lng:115.86},
+{id:"wellington",name:"惠灵顿 (新西兰)",flag:"🇳🇿",zone:"Pacific/Auckland",phone:"+64",tags:"huilingdun wellington nz new zealand xinxilan",lat:-41.29,lng:174.78},
+{id:"auckland",name:"奥克兰 (新西兰)",flag:"🇳🇿",zone:"Pacific/Auckland",phone:"+64",tags:"aokelan auckland nz new zealand xinxilan",lat:-36.85,lng:174.76},
+{id:"cairo",name:"开罗 (埃及)",flag:"🇪🇬",zone:"Africa/Cairo",phone:"+20",tags:"kailuo cairo eg egypt aiji",lat:30.04,lng:31.24},
+{id:"johannesburg",name:"约堡 (南非)",flag:"🇿🇦",zone:"Africa/Johannesburg",phone:"+27",tags:"yuebao johannesburg za south africa nanfei",lat:-26.20,lng:28.04},
+{id:"cape_town",name:"开普敦 (南非)",flag:"🇿🇦",zone:"Africa/Johannesburg",phone:"+27",tags:"kaipudun cape town za south africa nanfei",lat:-33.92,lng:18.42},
+{id:"lagos",name:"拉各斯 (尼日利亚)",flag:"🇳🇬",zone:"Africa/Lagos",phone:"+234",tags:"lagesi lagos ng nigeria niriliya",lat:6.52,lng:3.38},
+{id:"nairobi",name:"内罗毕 (肯尼亚)",flag:"🇰🇪",zone:"Africa/Nairobi",phone:"+254",tags:"neiluobi nairobi ke kenya kenniya",lat:-1.29,lng:36.82},
+{id:"addis_ababa",name:"亚的斯亚贝巴",flag:"🇪🇹",zone:"Africa/Addis_Ababa",phone:"+251",tags:"yadesiyabeiba addis ababa et ethiopia aisaiebiya",lat:9.03,lng:38.74},
+{id:"casablanca",name:"卡萨布兰卡 (摩洛哥)",flag:"🇲🇦",zone:"Africa/Casablanca",phone:"+212",tags:"kasabulanka casablanca ma morocco moluoge",lat:33.57,lng:-7.59},
+{id:"tunis",name:"突尼斯市 (突尼斯)",flag:"🇹🇳",zone:"Africa/Tunis",phone:"+216",tags:"tunisi tunis tn tunisia",lat:36.80,lng:10.18}
+];
+let currentCities=[];const initialIds=["new_york","los_angeles","paris","london","tokyo","prague","sydney","mexico_city","madrid","riyadh","dubai","amsterdam","rome","warsaw"];let simulatedDate=null,selectedCityId=null;
+// 天气缓存
+const weatherCache={};
+const CACHE_DURATION=3600000; // 1小时缓存
+
+function init(){loadData(),renderGrid(),initSortable(),initTimeMachine(),updateAllClocks(),setInterval(updateAllClocks,1e3)}function createRipple(a,e){const n=document.createElement("span"),i=Math.max(e.clientWidth,e.clientHeight)/2,t=e.getBoundingClientRect(),o=(a.clientX,t.left,a.clientY,t.top,e.querySelector(".status-dot"));o&&o.classList.contains("dot-green")?n.classList.add("ripple","ripple-green"):n.classList.add("ripple","ripple-grey");const s=e.getElementsByClassName("ripple")[0];s&&s.remove(),e.appendChild(n)}function handleCardClick(a,e){if(createRipple(a,e),e.classList.contains("active-green")||e.classList.contains("active-grey"))e.classList.remove("active-green","active-grey");else{const a=e.querySelector(".status-dot");a&&a.classList.contains("dot-green")?e.classList.add("active-green"):e.classList.add("active-grey")}}function initTimeMachine(){const a=document.getElementById("simTimeInput"),e=new Date,n=e.getFullYear(),i=String(e.getMonth()+1).padStart(2,"0"),t=String(e.getDate()).padStart(2,"0"),o=String(e.getHours()).padStart(2,"0"),s=String(e.getMinutes()).padStart(2,"0");a.value=`${n}-${i}-${t}T${o}:${s}`,a.addEventListener("input",(a=>{a.target.value&&(simulatedDate=new Date(a.target.value),document.getElementById("resetTimeBtn").classList.remove("active"),document.getElementById("mainCard").classList.add("simulating"),updateAllClocks())}))}function resetRealTime(){simulatedDate=null;const a=document.getElementById("simTimeInput"),e=new Date,n=e.getFullYear(),i=String(e.getMonth()+1).padStart(2,"0"),t=String(e.getDate()).padStart(2,"0"),o=String(e.getHours()).padStart(2,"0"),s=String(e.getMinutes()).padStart(2,"0");a.value=`${n}-${i}-${t}T${o}:${s}`,document.getElementById("resetTimeBtn").classList.add("active"),document.getElementById("mainCard").classList.remove("simulating"),updateAllClocks()}function getWorkStatus(a){const e=a.getHours();return e>=8&&e<23?{text:"可联系",color:"dot-green"}:{text:"休息",color:"dot-grey"}}const STORAGE_KEY="myWorldClock_v8_Weather";function loadData(){const a=localStorage.getItem(STORAGE_KEY);if(a){const e=JSON.parse(a);currentCities=e.map((a=>cityDatabase.find((e=>e.id===a)))).filter(Boolean)}else currentCities=initialIds.map((a=>cityDatabase.find((e=>e.id===a)))).filter(Boolean)}function saveData(){const a=currentCities.map((a=>a.id));localStorage.setItem(STORAGE_KEY,JSON.stringify(a))}
+function renderGrid(){const a=document.getElementById("clocks-grid");a.innerHTML="",currentCities.forEach(((e,n)=>{const i=document.createElement("div");i.className="city-card",i.setAttribute("data-id",e.id),i.setAttribute("data-zone",e.zone),i.onclick=function(a){handleCardClick(a,this)};const t=e.id;let o=e.name,s="";const l=e.name.indexOf(" (");l>-1?(o=e.name.substring(0,l),s=e.name.substring(l+2,e.name.length-1)):s=e.name,i.innerHTML=`\n            <div class="delete-btn" onclick="removeCity('${e.id}', event)">×</div>\n            <div class="city-header">\n                <div class="header-left">\n                    <span class="flag">${e.flag}</span>\n                    <div class="city-text-col">\n                        <div class="country-row-top">\n                            <span class="country-row-text">${s}</span>\n                            <span class="phone-text-plain">${e.phone}</span>\n                        </div>\n                        <div class="city-subtext">${o}</div>\n                    </div>\n                </div>\n                <div class="status-dot-wrapper">\n                    <span class="status-dot" id="dot-${t}"></span>\n                    <span class="status-text" id="status-${t}">...</span>\n                </div>\n            </div>\n            <div class="city-time" id="time-${t}">00:00</div>\n            <div class="city-info-row">\n                <div class="city-date" id="date-${t}">...</div>\n                <div class="weather-wrapper" id="weather-${t}"></div>\n                <div class="diff-tag" id="diff-${t}">...</div>\n            </div>\n        `,a.appendChild(i);
+// 触发天气请求
+fetchCityWeather(e)}));const e=document.createElement("div");e.className="add-card",e.setAttribute("data-no-drag","true"),e.onclick=openModal,e.innerHTML='<span class="add-icon">+</span>',a.appendChild(e)}const modal=document.getElementById("addModal"),cityListContainer=document.getElementById("cityListContainer"),searchInput=document.getElementById("citySearch"),confirmBtn=document.getElementById("confirmBtn");function openModal(){modal.classList.add("active"),searchInput.value="",selectedCityId=null,confirmBtn.disabled=!0,renderCityList(),setTimeout((()=>searchInput.focus()),100)}function closeModal(){modal.classList.remove("active")}function renderCityList(a=""){cityListContainer.innerHTML="";const e=currentCities.map((a=>a.id));let n=cityDatabase.filter((a=>!e.includes(a.id)));if(a){const e=a.trim().toLowerCase(),i=e.replace(/^\+/,"");n=n.filter((a=>{const n=a.name.toLowerCase(),t=a.phone.replace("+",""),o=(a.tags||"").toLowerCase();return!!t.startsWith(i)||(!!n.includes(e)||!!o.includes(e))}))}n.sort(((a,e)=>a.name.localeCompare(e.name,"zh"))),0!==n.length?n.forEach((a=>{const e=document.createElement("div");e.className="city-item",selectedCityId===a.id&&e.classList.add("selected"),e.onclick=()=>selectCity(a.id),e.innerHTML=`<span class="city-item-name"><span class="city-item-flag">${a.flag}</span>${a.name}</span>`,cityListContainer.appendChild(e)})):cityListContainer.innerHTML='<div style="padding:15px;text-align:center;color:#999;">无匹配结果</div>'}function filterCities(){renderCityList(searchInput.value)}function selectCity(a){selectedCityId=a,confirmBtn.disabled=!1,renderCityList(searchInput.value)}function confirmAdd(){if(!selectedCityId)return;const a=cityDatabase.find((a=>a.id===selectedCityId));a&&(currentCities.push(a),saveData(),renderGrid(),updateAllClocks(),closeModal())}function removeCity(a,e){e.stopPropagation(),confirm("确定要移除这个城市吗？")&&(currentCities=currentCities.filter((e=>e.id!==a)),saveData(),renderGrid(),updateAllClocks())}function initSortable(){const a=document.getElementById("clocks-grid");new Sortable(a,{animation:200,ghostClass:"sortable-ghost",filter:"[data-no-drag]",preventOnFilter:!1,onEnd:function(e){const n=[];a.querySelectorAll(".city-card").forEach((a=>{n.push(a.getAttribute("data-id"))})),currentCities=n.map((a=>cityDatabase.find((e=>e.id===a)))).filter(Boolean),saveData()}})}function updateAllClocks(){let a=simulatedDate||new Date;updateSingleClock(a,"Asia/Shanghai","bj-time","bj-date",null,!0),currentCities.forEach((e=>{updateSingleClock(a,e.zone,`time-${e.id}`,`date-${e.id}`,e,!1),calculateDiff(a,e.zone,`diff-${e.id}`)}))}function updateSingleClock(a,e,n,i,t,o){const s=document.getElementById(n),l=document.getElementById(i);if(s)try{const n=a.toLocaleString("en-US",{timeZone:e}),i=new Date(n),d={hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:e};o&&(d.second="2-digit");const r=new Intl.DateTimeFormat("zh-CN",d).format(a),g=new Intl.DateTimeFormat("zh-CN",{month:"short",day:"numeric",weekday:"short",timeZone:e}).format(a);if(s.textContent=r,l.textContent=g,t){const a=document.getElementById(`dot-${t.id}`),e=document.getElementById(`status-${t.id}`),n=getWorkStatus(i);e.textContent=n.text,a.className=`status-dot ${n.color}`}}catch(a){s.textContent="--:--"}}function calculateDiff(a,e,n){const i=document.getElementById(n);if(!i)return;const t=a.toLocaleString("en-US",{timeZone:"Asia/Shanghai"}),o=a.toLocaleString("en-US",{timeZone:e}),s=(new Date(o)-new Date(t))/36e5,l=Math.abs(Math.round(10*s)/10);let d="",r="#666",g="#f5f5f5";0===s?(d="无时差",r="#389e0d",g="#f6ffed"):s>0?(d=`早 ${l} 小时`,r="#c41d7f",g="#fff0f6"):(d=`晚 ${l} 小时`,r="#096dd9",g="#e6f7ff"),i.textContent=d,i.style.color=r,i.style.backgroundColor=g}
+
+// --- 天气功能 ---
+function fetchCityWeather(city) {
+    if (!city.lat || !city.lng) return;
+    const el = document.getElementById(`weather-${city.id}`);
+    if (!el) return;
+
+    // 检查缓存
+    const now = Date.now();
+    if (weatherCache[city.id] && (now - weatherCache[city.id].timestamp < CACHE_DURATION)) {
+        renderWeather(el, weatherCache[city.id].data);
+        return;
+    }
+
+    // 获取数据
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&current_weather=true`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.current_weather) {
+                const wData = {
+                    temp: Math.round(data.current_weather.temperature),
+                    code: data.current_weather.weathercode
+                };
+                // 写入缓存
+                weatherCache[city.id] = { timestamp: now, data: wData };
+                renderWeather(el, wData);
+            }
+        })
+        .catch(err => {
+            console.error("Weather error:", err);
+            el.textContent = "";
+        });
+}
+
+function renderWeather(el, data) {
+    const emoji = getWeatherEmoji(data.code);
+    el.innerHTML = `<span>${data.temp}°C</span> <span>${emoji}</span>`;
+}
+
+function getWeatherEmoji(code) {
+    if (code === 0) return "☀️";
+    if (code >= 1 && code <= 3) return "⛅";
+    if (code === 45 || code === 48) return "🌫️";
+    if (code >= 51 && code <= 67) return "🌧️";
+    if (code >= 71 && code <= 77) return "❄️";
+    if (code >= 80 && code <= 82) return "🌦️";
+    if (code >= 85 && code <= 86) return "❄️";
+    if (code >= 95) return "⛈️";
+    return "🌡️";
+}
+
+init()
+</script>
+</body>
+</html>
