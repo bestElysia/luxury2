@@ -1,66 +1,58 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang=zh-CN>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-    <title>世界时间 & 天气看板</title>
-    <meta name="theme-color" content="#f5f7fa">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-    <link rel="stylesheet" href="worldtime.css">
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>世界时间 & 天气看板</title>
+<meta name=theme-color content=#f5f7fa>
+<meta name=apple-mobile-web-app-status-bar-style content=black-translucent>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js></script>
+<link rel=stylesheet href=worldtime.css>
 </head>
 <body>
-
-    <div class="float-btn-group">
-        <a href="https://www.doubao.com/chat/?channel=browser_landing_page" target="_blank" class="float-btn">
-            <span class="doubao-icon">(✿◡‿◡)</span> 豆包
-        </a>
-        <button class="float-btn" id="themeBtn">
-            🎨 换肤
-        </button>
-    </div>
-
-    <div class="container">
-        <h1>世界时间 & 天气看板</h1>
-        <div class="tip">长按拖拽排序 · 点击卡片切换标记状态 · 天气每30分钟自动刷新</div>
-        
-        <div class="time-machine">
-            <span class="tm-label">📅 预约推算:</span>
-            <input type="datetime-local" id="simTimeInput">
-            <button id="resetTimeBtn" class="active">回到现在</button>
-        </div>
-
-        <div class="main-clock-wrapper">
-            <div class="main-card" id="mainCard">
-                <span class="label">🇨🇳 北京 (基准时间)</span>
-                <div class="time" id="bj-time">00:00:00</div>
-                <div class="date" id="bj-date">...</div>
-            </div>
-        </div>
-
-        <div class="grid-container" id="clocks-grid">
-            </div>
-    </div>
-
-    <div class="modal-overlay" id="addModal">
-        <div class="modal-content">
-            <div class="modal-title">添加新城市</div>
-            <div class="search-box">
-                <input class="search-input" id="citySearch" placeholder="搜索: 城市名 / 拼音 / 国家 / 区号 (如: 86, US, Tokyo)">
-            </div>
-            <div class="city-list" id="cityListContainer">
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-cancel" onclick="closeModal()">取消</button>
-                <button class="btn btn-confirm" id="confirmBtn" disabled>确认添加</button>
-            </div>
-        </div>
-    </div>
-
-    <video id="sakura-video" muted playsinline preload="auto">
-        <source src="assets/sakura.mp4" type="video/mp4">
-    </video>
-
-    <script src="worldtime.js"></script>
+<div class=float-btn-group>
+<a href="https://www.doubao.com/chat/?channel=browser_landing_page" target=_blank class=float-btn>
+<span class=doubao-icon>(✿◡‿◡)</span> 豆包
+</a>
+<button class=float-btn id=themeBtn>
+🎨 换肤
+</button>
+</div>
+<div class=container>
+<h1>世界时间 & 天气看板</h1>
+<div class=tip>长按拖拽排序 · 点击卡片切换标记状态 · 天气每30分钟自动刷新</div>
+<div class=time-machine>
+<span class=tm-label>📅 预约推算:</span>
+<input type=datetime-local id=simTimeInput>
+<button id=resetTimeBtn class=active>回到现在</button>
+</div>
+<div class=main-clock-wrapper>
+<div class=main-card id=mainCard>
+<span class=label>🇨🇳 北京 (基准时间)</span>
+<div class=time id=bj-time>00:00:00</div>
+<div class=date id=bj-date>...</div>
+</div>
+</div>
+<div class=grid-container id=clocks-grid>
+</div>
+</div>
+<div class=modal-overlay id=addModal>
+<div class=modal-content>
+<div class=modal-title>添加新城市</div>
+<div class=search-box>
+<input class=search-input id=citySearch placeholder="搜索: 城市名 / 拼音 / 国家 / 区号 (如: 86, US, Tokyo)">
+</div>
+<div class=city-list id=cityListContainer>
+</div>
+<div class=btn-group>
+<button class="btn btn-cancel" onclick=closeModal()>取消</button>
+<button class="btn btn-confirm" id=confirmBtn disabled>确认添加</button>
+</div>
+</div>
+</div>
+<video id=sakura-video muted playsinline preload=auto>
+<source src=assets/sakura.mp4 type=video/mp4>
+</video>
+<script src=worldtime.js></script>
 </body>
 </html>
