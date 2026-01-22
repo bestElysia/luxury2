@@ -115,7 +115,7 @@ const cityDatabase = [
 ];
 
 let currentCities = [];
-const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "amsterdam", "rome", "warsaw"];
+const initialIds = ["new_york", "los_angeles", "paris", "london", "tokyo", "prague", "sydney", "mexico_city", "madrid", "riyadh", "dubai", "manama", "jerusalem", "amsterdam", "rome", "warsaw"];
 let simulatedDate = null;
 let selectedCityId = null;
 const weatherCache = {};
@@ -140,7 +140,7 @@ const themes = [
     // 极光: 绿/紫/深蓝 (深邃)
     {
         name: "🌌 极光",
-        color: "#0f2027",
+        color: "#2c364",
         image: "linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #43e97b)",
         titleColor: "#fff",
         isDynamic: true,
@@ -150,7 +150,7 @@ const themes = [
     // 梦幻: 粉/蓝/白 (清新)
     {
         name: "🦄 梦幻",
-        color: "#ff9a9e",
+        color: "#ffc2d1",
         image: "linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffd1ff, #a18cd1)",
         titleColor: "#444",
         isDynamic: true,
