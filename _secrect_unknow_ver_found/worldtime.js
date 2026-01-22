@@ -121,23 +121,20 @@ let selectedCityId = null;
 const weatherCache = {};
 const CACHE_DURATION = 1200000;
 
-// --- 主题配置 (修复：流光主题基础色改为蓝色，解决状态栏绿色问题) ---
+// --- 主题配置 ---
 const themes = [
-    // 云端: 纯白不透明
+    // 云端
     { name: "☁️ 云端", color: "#f5f7fa", image: "none", titleColor: "#2c3e50", isDynamic: false, cardBg: "#ffffff" },
-
-    // 流光: 蓝/紫/红/橙 (类似 Apple Music)
+    // 流光
     {
         name: "🌊 流光",
-        // color: "#23d5ab", // <--- 旧代码是绿色，导致状态栏变绿
-        color: "#23a6d5", // <--- 新代码改为蓝色，与天空一致
+        color: "#23a6d5", 
         image: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
         titleColor: "#fff",
         isDynamic: true,
         cardBg: "rgba(255, 255, 255, 0.65)"
     },
-
-    // 极光: 绿/紫/深蓝 (深邃)
+    // 极光
     {
         name: "🌌 极光",
         color: "#2c364",
@@ -146,8 +143,7 @@ const themes = [
         isDynamic: true,
         cardBg: "rgba(255, 255, 255, 0.65)"
     },
-
-    // 梦幻: 粉/蓝/白 (清新)
+    // 梦幻
     {
         name: "🦄 梦幻",
         color: "#ffc2d1",
@@ -160,7 +156,7 @@ const themes = [
 
 let currentThemeIndex = 0;
 
-// --- DOM 元素 ---
+// --- DOM 元素引用 ---
 const modal = document.getElementById("addModal");
 const cityListContainer = document.getElementById("cityListContainer");
 const searchInput = document.getElementById("citySearch");
@@ -168,7 +164,6 @@ const confirmBtn = document.getElementById("confirmBtn");
 const themeBtn = document.getElementById("themeBtn");
 
 // --- 初始化与主题逻辑 ---
-
 function init() {
     loadData();
     renderGrid();
@@ -179,19 +174,36 @@ function init() {
     setInterval(updateAllClocks, 1000);
     setInterval(refreshAllWeather, 1800000);
 
-    // 绑定主题切换按钮事件
+    // --- 修复部分：绑定事件监听器 ---
+    
+    // 1. 搜索框输入事件
+    if (searchInput) {
+        searchInput.addEventListener("input", filterCities);
+    }
+
+    // 2. 确认添加按钮点击事件
+    if (confirmBtn) {
+        confirmBtn.addEventListener("click", confirmAdd);
+    }
+
+    // 3. 模态框背景点击关闭
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
+
+    // --- 绑定其他事件 ---
+
+    // 主题切换按钮
     if (themeBtn) {
         themeBtn.addEventListener('click', toggleTheme);
     }
 
-    // 绑定全局点击事件：暂停背景动画
+    // 全局点击事件：控制动态背景暂停/播放
     document.body.addEventListener('click', (e) => {
-        // 检查点击目标是否是交互元素或其子元素
         const isInteractive = e.target.closest('.city-card, .main-card, .time-machine, .float-btn, .modal-content, .add-card');
-        // 检查是否处于动态背景模式
         const isDynamicTheme = document.body.classList.contains('animate-bg');
-
-        // 如果点击的是空白处（非交互元素）且当前有动画
         if (!isInteractive && isDynamicTheme) {
             document.body.classList.toggle('bg-paused');
         }
@@ -235,14 +247,14 @@ function applyTheme() {
 
     if (t.isDynamic) {
         document.body.classList.add('animate-bg');
-        document.body.classList.remove('bg-paused'); // 切换主题时默认恢复播放
+        document.body.classList.remove('bg-paused');
     } else {
         document.body.classList.remove('animate-bg');
     }
 
     if (themeBtn) themeBtn.innerText = `🎨 换肤: ${t.name.split(' ')[1]}`;
 
-    // --- 修复：动态修改浏览器状态栏颜色 ---
+    // 动态修改浏览器状态栏颜色
     let metaThemeColor = document.querySelector("meta[name=theme-color]");
     if (!metaThemeColor) {
         metaThemeColor = document.createElement("meta");
@@ -253,23 +265,16 @@ function applyTheme() {
 }
 
 // --- 卡片交互与渲染 ---
-
 function createRipple(event, element) {
     const ripple = document.createElement("span");
-    // const rect = element.getBoundingClientRect(); // 未使用，注释掉
-    
-    // 判断卡片状态决定波纹颜色
     const dot = element.querySelector(".status-dot");
     if (dot && dot.classList.contains("dot-green")) {
         ripple.classList.add("ripple", "ripple-green");
     } else {
         ripple.classList.add("ripple", "ripple-grey");
     }
-    
-    // 移除旧波纹
     const oldRipple = element.getElementsByClassName("ripple")[0];
     if (oldRipple) oldRipple.remove();
-    
     element.appendChild(ripple);
 }
 
@@ -291,6 +296,7 @@ function initTimeMachine() {
     const input = document.getElementById("simTimeInput");
     const resetBtn = document.getElementById("resetTimeBtn");
     
+    // 初始化输入框显示
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -300,6 +306,7 @@ function initTimeMachine() {
     
     input.value = `${year}-${month}-${day}T${hour}:${minute}`;
     
+    // 监听输入变化
     input.addEventListener("input", (e) => {
         if (e.target.value) {
             simulatedDate = new Date(e.target.value);
@@ -308,13 +315,17 @@ function initTimeMachine() {
             updateAllClocks();
         }
     });
+
+    // 监听重置按钮 (补充的修复)
+    if (resetBtn) {
+        resetBtn.addEventListener("click", resetRealTime);
+    }
 }
 
 function resetRealTime() {
     simulatedDate = null;
     const input = document.getElementById("simTimeInput");
     const now = new Date();
-    // 重置输入框显示
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
@@ -415,7 +426,6 @@ function renderGrid() {
 }
 
 // --- 弹窗逻辑 ---
-
 function openModal() {
     modal.classList.add("active");
     searchInput.value = "";
@@ -515,7 +525,6 @@ function initSortable() {
 }
 
 // --- 时钟核心逻辑 ---
-
 function updateAllClocks() {
     let now = simulatedDate || new Date();
     
@@ -536,7 +545,6 @@ function updateSingleClock(baseTime, timeZone, timeElId, dateElId, cityObj, show
     if (!timeEl) return;
     
     try {
-        // 使用 toLocaleString 转换时区
         const localTimeStr = baseTime.toLocaleString("en-US", { timeZone: timeZone });
         const localDate = new Date(localTimeStr);
         
@@ -559,7 +567,6 @@ function updateSingleClock(baseTime, timeZone, timeElId, dateElId, cityObj, show
         timeEl.textContent = timeString;
         dateEl.textContent = dateString;
         
-        // 如果是城市卡片，更新状态点
         if (cityObj) {
             const dot = document.getElementById(`dot-${cityObj.id}`);
             const statusText = document.getElementById(`status-${cityObj.id}`);
@@ -607,7 +614,6 @@ function calculateDiff(baseTime, targetZone, elId) {
 }
 
 // --- 天气功能 ---
-
 function refreshAllWeather() {
     console.log("正在自动刷新天气...");
     currentCities.forEach(city => {
@@ -621,7 +627,6 @@ function fetchCityWeather(city) {
     if (!el) return;
     
     const now = Date.now();
-    // 检查缓存
     if (weatherCache[city.id] && (now - weatherCache[city.id].timestamp < CACHE_DURATION)) {
         renderWeather(el, weatherCache[city.id].data);
         return;
