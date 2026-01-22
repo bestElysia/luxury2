@@ -511,6 +511,7 @@ function initSortable() {
     new Sortable(grid, {
         animation: 200,
         ghostClass: "sortable-ghost",
+        delay: 1000, // <--- 已修改：长按 1 秒后才能拖拽
         filter: "[data-no-drag]",
         preventOnFilter: false,
         onEnd: function (evt) {
