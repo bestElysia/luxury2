@@ -121,7 +121,7 @@ let selectedCityId = null;
 const weatherCache = {};
 const CACHE_DURATION = 1200000;
 
-// --- 主题配置 (4色 Mesh Gradient) ---
+// --- 主题配置 (修复：流光主题基础色改为蓝色，解决状态栏绿色问题) ---
 const themes = [
     // 云端: 纯白不透明
     { name: "☁️ 云端", color: "#f5f7fa", image: "none", titleColor: "#2c3e50", isDynamic: false, cardBg: "#ffffff" },
@@ -129,7 +129,8 @@ const themes = [
     // 流光: 蓝/紫/红/橙 (类似 Apple Music)
     {
         name: "🌊 流光",
-        color: "#23d5ab",
+        // color: "#23d5ab", // <--- 旧代码是绿色，导致状态栏变绿
+        color: "#23a6d5", // <--- 新代码改为蓝色，与天空一致
         image: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
         titleColor: "#fff",
         isDynamic: true,
@@ -226,16 +227,22 @@ function applyTheme() {
     }
 
     if (themeBtn) themeBtn.innerText = `🎨 换肤: ${t.name.split(' ')[1]}`;
+
+    // --- 修复：动态修改浏览器状态栏颜色 ---
+    let metaThemeColor = document.querySelector("meta[name=theme-color]");
+    if (!metaThemeColor) {
+        metaThemeColor = document.createElement("meta");
+        metaThemeColor.name = "theme-color";
+        document.head.appendChild(metaThemeColor);
+    }
+    metaThemeColor.content = t.color;
 }
 
 // --- 卡片交互与渲染 ---
 
 function createRipple(event, element) {
     const ripple = document.createElement("span");
-    const rect = element.getBoundingClientRect();
-    // 计算点击位置
-    const x = event.clientX;
-    const y = event.clientY;
+    // const rect = element.getBoundingClientRect(); // 未使用，注释掉
     
     // 判断卡片状态决定波纹颜色
     const dot = element.querySelector(".status-dot");
@@ -643,4 +650,3 @@ function getWeatherEmoji(code) {
 
 // 启动
 document.addEventListener('DOMContentLoaded', init);
-
