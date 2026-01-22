@@ -14,6 +14,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-color);
     background-image: var(--bg-image);
+    /* 关键：拉大背景尺寸，让多色渐变有流动的空间 */
     background-size: 300% 300%;
     background-attachment: fixed;
     margin: 0;
@@ -24,6 +25,7 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+/* 优化后的流动动画 */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -58,6 +60,7 @@ h1 {
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
+/* --- 樱花视频特效样式 --- */
 #sakura-video {
     position: fixed;
     top: 0;
@@ -65,18 +68,19 @@ h1 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0;
-    mix-blend-mode: screen;
+    pointer-events: none; /* 关键：让鼠标穿透视频，不影响操作 */
+    z-index: 100; /* 层级设定：在背景之上，在按钮之下 */
+    opacity: 0; /* 默认隐藏 */
+    mix-blend-mode: screen; /* 滤色模式：去黑底 */
     transition: opacity 0.5s ease;
-    transform: scale(1.1);
+    transform: scale(1.1); /* 稍微放大一点防止边缘穿帮 */
 }
 
 #sakura-video.playing {
-    opacity: 1;
+    opacity: 1; /* 播放时显示 */
 }
 
+/* --- 毛玻璃卡片样式 --- */
 .main-card, .city-card {
     background: var(--card-bg);
     backdrop-filter: blur(16px);
@@ -84,6 +88,7 @@ h1 {
     border: var(--card-border);
 }
 
+/* 时间机 */
 .time-machine {
     display: flex;
     justify-content: center;
@@ -137,6 +142,7 @@ h1 {
     color: #555;
 }
 
+/* 主卡片 */
 .main-clock-wrapper {
     display: flex;
     justify-content: center;
@@ -186,6 +192,7 @@ h1 {
     margin-top: 8px;
 }
 
+/* 城市网格 */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -625,9 +632,10 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 101;
+    z-index: 101; /* 提高按钮层级，确保在视频上方 */
 }
 
+/* 核心修复：统一 a 和 button 的样式表现 */
 .float-btn {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
@@ -641,11 +649,19 @@ h1 {
     transition: transform .2s, box-shadow .2s;
     display: flex;
     align-items: center;
+    justify-content: center; /* 确保文字居中 */
     gap: 4px;
     border: 1px solid rgba(255, 255, 255, 0.6);
     cursor: pointer;
     width: fit-content;
     margin-left: auto;
+    
+    /* 新增：强制统一 */
+    box-sizing: border-box; /* 统一盒模型 */
+    font-family: inherit;   /* 强制继承字体 */
+    line-height: 1.2;       /* 统一行高 */
+    margin: 0;              /* 重置默认边距 */
+    -webkit-appearance: none; /* 去除iOS默认样式 */
 }
 
 .float-btn:hover {
