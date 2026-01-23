@@ -508,10 +508,14 @@ function removeCity(id, event) {
 
 function initSortable() {
     const grid = document.getElementById("clocks-grid");
+    // 确保你的 HTML 中已经加载了 SortableJS 库
     new Sortable(grid, {
         animation: 200,
         ghostClass: "sortable-ghost",
-        delay: 1000, // <--- 已修改：长按 1 秒后才能拖拽
+        // --- 优化部分开始 ---
+        delay: 200,             // 触屏设备（手机）长按 200ms 才能拖动，防止滚动时误触
+        delayOnTouchOnly: true, // 桌面设备（鼠标）无延迟，点击即拖动，体验更流畅
+        // --- 优化部分结束 ---
         filter: "[data-no-drag]",
         preventOnFilter: false,
         onEnd: function (evt) {
