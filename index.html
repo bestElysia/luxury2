@@ -38,7 +38,34 @@
 <div class=main-clock-wrapper>
 <div class=main-card id=mainCard>
 <span class=label>🇨🇳 北京 (基准时间)</span>
-<div class=time id=bj-time>00:00:00</div>
+<div class="time flip-clock" id="bj-time">
+    <div class="flip-unit" id="flip-hour">
+        <div class="top-static">00</div>
+        <div class="bottom-static">00</div>
+        <div class="flap">
+            <div class="flap-front">00</div>
+            <div class="flap-back">00</div>
+        </div>
+    </div>
+    <span class="colon">:</span>
+    <div class="flip-unit" id="flip-minute">
+        <div class="top-static">00</div>
+        <div class="bottom-static">00</div>
+        <div class="flap">
+            <div class="flap-front">00</div>
+            <div class="flap-back">00</div>
+        </div>
+    </div>
+    <span class="colon">:</span>
+    <div class="flip-unit" id="flip-second">
+        <div class="top-static">00</div>
+        <div class="bottom-static">00</div>
+        <div class="flap">
+            <div class="flap-front">00</div>
+            <div class="flap-back">00</div>
+        </div>
+    </div>
+</div>
 <div class=date id=bj-date>...</div>
 </div>
 </div>
