@@ -591,7 +591,7 @@ function flipUnit(unitId, newValue, timePart) {
         bottomStatic.textContent = newValue;
         flapFront.textContent = newValue;
         unitEl.classList.remove('flipping');
-    }, 600); 
+    }, 400); 
 }
 
 function updateSingleClock(baseTime, timeZone, timeElId, dateElId, cityObj, showSeconds) {
