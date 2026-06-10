@@ -659,6 +659,7 @@ h1 {
     line-height: 1.2;
     margin: 0;
     -webkit-appearance: none;
+    white-space: nowrap; /* 修复点1：强制内容绝不换行 */
 }
 
 .float-btn:hover {
@@ -702,9 +703,15 @@ h1 {
         flex-direction: row;
         justify-content: center;
         margin-bottom: 20px;
+        flex-wrap: wrap; /* 修复点2：允许在空间不够时换行 */
+        gap: 12px; /* 修复点3：增加统一的间距 */
+        padding: 0 10px; /* 修复点4：防止贴紧屏幕边缘 */
     }
 
     .float-btn {
         margin-left: 0;
+        width: auto; /* 修复点5：覆盖宽度的自适应设定 */
+        flex: 1 1 40%; /* 修复点6：让按钮形成整齐的 2x2 宫格排列 */
+        padding: 12px 5px; /* 修复点7：微调内边距，使手机端点击热区更舒适 */
     }
 }
