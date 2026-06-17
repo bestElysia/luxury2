@@ -1,16 +1,16 @@
 /* =========================================
-   全局变量 (液态苹果深色主题)
+   全局变量 (液态苹果深色主题 - 修复高对比度版)
 ========================================= */
 :root {
     --bg-color: #000000;
-    --card-bg: rgba(255, 255, 255, 0.06); /* 极度透明，依靠背景色透出 */
-    --primary-color: #0A84FF; /* Apple Blue */
+    --card-bg: rgba(0, 0, 0, 0.35); /* 黑色半透明打底，解决泛白问题 */
+    --primary-color: #0A84FF;
     --text-main: #f5f5f7;
     --text-sub: rgba(235, 235, 245, 0.6);
     --shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
     --title-color: #ffffff;
-    --card-border: 1px solid rgba(255, 255, 255, 0.1);
-    --card-border-top: 1px solid rgba(255, 255, 255, 0.25); /* 顶部边缘高光 */
+    --card-border: 1px solid rgba(255, 255, 255, 0.06); /* 降低侧边高光刺眼感 */
+    --card-border-top: 1px solid rgba(255, 255, 255, 0.12); /* 顶部细微高光 */
 }
 
 /* =========================================
@@ -27,7 +27,7 @@ body {
     background-size: 200% 200%;
     background-attachment: fixed;
     margin: 0;
-    padding: max(20px, env(safe-area-inset-top)) 20px 20px 20px; /* 适配 iOS 刘海屏 */
+    padding: max(20px, env(safe-area-inset-top)) 20px 20px 20px;
     color: var(--text-main);
     transition: background 0.5s ease;
     overscroll-behavior-y: none;
@@ -92,7 +92,7 @@ h1 {
     border: var(--card-border);
     border-top: var(--card-border-top);
     border-radius: 24px; /* Apple Squircle 大圆角 */
-    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* =========================================
@@ -127,7 +127,7 @@ h1 {
 }
 
 .time-machine input::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* 让日历小图标在深色模式下变白 */
+    filter: invert(1);
     cursor: pointer;
 }
 
@@ -220,7 +220,6 @@ h1 {
     cursor: pointer;
     overflow: hidden;
     position: relative;
-    /* 精调的非线性果冻弹簧曲线 */
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
                 box-shadow 0.4s ease, 
                 border-color 0.4s ease, 
@@ -230,13 +229,12 @@ h1 {
 
 .city-card:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(30, 30, 30, 0.45); /* 悬浮时微微提亮 */
 }
 
 .city-card:active {
-    /* 按压时清脆的紧缩感 */
     transform: scale(0.95);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -252,7 +250,7 @@ h1 {
 .sortable-drag {
     cursor: grabbing;
     opacity: 1;
-    background: rgba(40, 40, 40, 0.9);
+    background: rgba(30, 30, 30, 0.85); /* 拖拽时加深底色 */
     backdrop-filter: blur(28px);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
     transform: scale(1.05);
@@ -261,14 +259,14 @@ h1 {
 
 /* 状态色覆写 (深色模式适配) */
 .city-card.active-green {
-    background-color: rgba(48, 209, 88, 0.12) !important;
+    background-color: rgba(20, 50, 25, 0.6) !important; /* 深邃的墨绿玻璃 */
     border-color: rgba(48, 209, 88, 0.3) !important;
 }
 
 .city-card.active-grey {
-    background-color: rgba(255, 255, 255, 0.02) !important;
+    background-color: rgba(0, 0, 0, 0.55) !important; /* 更深的暗黑玻璃 */
     border-color: rgba(255, 255, 255, 0.05) !important;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .city-card.active-grey .city-time {
@@ -395,7 +393,7 @@ h1 {
     border-radius: 6px;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.1);
-    color: var(--text-main) !important; /* 强制覆盖原本的颜色 */
+    color: var(--text-main) !important;
     backdrop-filter: blur(8px);
 }
 
@@ -459,16 +457,16 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px dashed rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.2);
     min-height: 160px;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .add-card:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .add-card:active {
@@ -479,12 +477,12 @@ h1 {
 
 .add-icon {
     font-size: 3rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.2);
     font-weight: 200;
     transition: color 0.3s;
 }
 
-.add-card:hover .add-icon { color: rgba(255, 255, 255, 0.8); }
+.add-card:hover .add-icon { color: rgba(255, 255, 255, 0.6); }
 .add-card:active .add-icon { color: var(--primary-color); }
 
 /* =========================================
@@ -647,7 +645,6 @@ h1 {
 ========================================= */
 .float-btn-group {
     position: absolute;
-    /* 适配 iOS 独立 PWA 模式下的安全距离 */
     top: max(20px, env(safe-area-inset-top)); 
     right: 20px;
     display: flex;
