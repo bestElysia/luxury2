@@ -1,57 +1,744 @@
-/* 1. 流体级别的背景与基础字体 */
+/* =========================================
+   全局变量 (液态苹果深色主题)
+========================================= */
+:root {
+    --bg-color: #000000;
+    --card-bg: rgba(255, 255, 255, 0.06); /* 极度透明，依靠背景色透出 */
+    --primary-color: #0A84FF; /* Apple Blue */
+    --text-main: #f5f5f7;
+    --text-sub: rgba(235, 235, 245, 0.6);
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+    --title-color: #ffffff;
+    --card-border: 1px solid rgba(255, 255, 255, 0.1);
+    --card-border-top: 1px solid rgba(255, 255, 255, 0.25); /* 顶部边缘高光 */
+}
+
+/* =========================================
+   基础设定与流体背景
+========================================= */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-    background-color: #000; /* 苹果深色模式底色更显高级 */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    /* 苹果标志性的 Mesh Gradient 网格渐变 */
     background-image: 
-        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        radial-gradient(at 0% 0%, hsla(253, 16%, 15%, 1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225, 39%, 25%, 1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
     background-size: 200% 200%;
-    animation: liquidBackground 15s ease-in-out infinite alternate;
+    background-attachment: fixed;
     margin: 0;
-    padding: 20px;
-    color: #f5f5f7; /* 苹果灰白字 */
+    padding: max(20px, env(safe-area-inset-top)) 20px 20px 20px; /* 适配 iOS 刘海屏 */
+    color: var(--text-main);
+    transition: background 0.5s ease;
     overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    animation-play-state: running;
 }
 
-@keyframes liquidBackground {
-    0% { background-position: 0% 50%; }
+@keyframes gradientAnimation {
+    0%, 100% { background-position: 0 50%; }
     50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
-/* 2. 极致毛玻璃卡片（替换原有的 .main-card, .city-card） */
-.main-card, .city-card {
-    /* 更深的模糊与半透明背景 */
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    
-    /* 模拟玻璃边缘高光 */
+body.animate-bg {
+    animation: 15s infinite alternate gradientAnimation ease-in-out;
+}
+
+body.bg-paused {
+    animation-play-state: paused !important;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+/* =========================================
+   排版与标题
+========================================= */
+h1 {
+    text-align: center;
+    color: var(--title-color);
+    margin-bottom: 8px;
+    font-size: 1.8rem;
+    font-weight: 800;
+    transition: color 0.3s;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.tip {
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.tm-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* =========================================
+   液态毛玻璃卡片核心样式
+========================================= */
+.main-card, .city-card, .time-machine, .add-card {
+    background: var(--card-bg);
+    /* 极致毛玻璃与高饱和折射 */
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: var(--card-border);
+    border-top: var(--card-border-top);
+    border-radius: 24px; /* Apple Squircle 大圆角 */
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================
+   预约推算 (Time Machine)
+========================================= */
+.time-machine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 12px 24px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50px;
+}
+
+.time-machine input {
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    
-    /* 苹果标志性大圆角与弥散阴影 */
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    
-    /* 果冻弹性非线性过渡曲线 */
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                box-shadow 0.4s ease, 
-                background 0.4s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    background: rgba(255, 255, 255, 0.08);
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-/* 3. 悬浮与点击的液态弹性交互 */
+.time-machine input:focus {
+    border-color: var(--primary-color);
+}
+
+.time-machine input::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* 让日历小图标在深色模式下变白 */
+    cursor: pointer;
+}
+
+.time-machine button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--text-main);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.time-machine button.active, .btn-confirm {
+    background: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
+}
+
+.time-machine button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   基准时间卡片
+========================================= */
+.main-clock-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.main-card {
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-top: 5px solid var(--primary-color);
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.main-card.simulating {
+    border-top-color: #FF9F0A; /* Apple 橙色 */
+}
+
+.main-card .time {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.main-card.simulating .time {
+    color: #FF9F0A;
+}
+
+.main-card .label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+
+.main-card .date {
+    font-size: 1rem;
+    color: var(--text-sub);
+    margin-top: 8px;
+}
+
+/* =========================================
+   城市网格与卡片交互 (核心果冻动画)
+========================================= */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.city-card {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    /* 精调的非线性果冻弹簧曲线 */
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.4s ease, 
+                border-color 0.4s ease, 
+                background-color 0.4s ease;
+    touch-action: pan-y;
+}
+
 .city-card:hover {
-    /* 悬浮时轻微浮起 */
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .city-card:active {
-    /* 点击时非线性果冻回弹 */
+    /* 按压时清脆的紧缩感 */
     transform: scale(0.95);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 更干脆的按下状态 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 拖拽状态 */
+.sortable-ghost {
+    opacity: 0.3;
+    background: rgba(10, 132, 255, 0.2);
+    border: 2px dashed var(--primary-color);
+}
+
+.sortable-drag {
+    cursor: grabbing;
+    opacity: 1;
+    background: rgba(40, 40, 40, 0.9);
+    backdrop-filter: blur(28px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    transform: scale(1.05);
+    z-index: 1000;
+}
+
+/* 状态色覆写 (深色模式适配) */
+.city-card.active-green {
+    background-color: rgba(48, 209, 88, 0.12) !important;
+    border-color: rgba(48, 209, 88, 0.3) !important;
+}
+
+.city-card.active-grey {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    opacity: 0.7;
+}
+
+.city-card.active-grey .city-time {
+    color: var(--text-sub);
+}
+
+.city-card.active-grey .country-row-text {
+    color: var(--text-sub);
+}
+
+/* =========================================
+   卡片内部元素
+========================================= */
+.city-header, .city-info-row, .city-time {
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.city-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    min-height: 44px;
+}
+
+.header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    margin-right: 8px;
+}
+
+.flag {
+    font-size: 1.8rem;
+    line-height: 1.1;
+    margin-top: 1px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.city-text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.country-row-top {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.country-row-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.phone-text-plain {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-sub);
+    font-family: inherit;
+}
+
+.city-subtext {
+    font-size: 0.85rem;
+    color: var(--text-sub);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.city-time {
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s;
+    letter-spacing: -0.5px;
+}
+
+.city-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.city-date {
+    font-size: 0.85rem;
+    color: var(--text-sub);
+    flex: 1;
+}
+
+.weather-wrapper {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 10px;
+}
+
+.diff-tag {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main) !important; /* 强制覆盖原本的颜色 */
+    backdrop-filter: blur(8px);
+}
+
+/* =========================================
+   状态小圆点与删除按钮
+========================================= */
+.status-dot-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-green { background-color: #32D74B; box-shadow: 0 0 8px rgba(50, 215, 75, 0.6); }
+.dot-grey { background-color: #8E8E93; }
+
+.status-text {
+    color: var(--text-main);
+}
+
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    line-height: 26px;
+    font-size: 18px;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+}
+
+.city-card:hover .delete-btn { opacity: 1; }
+.delete-btn:hover { background: #FF453A; color: #fff; transform: scale(1.1); }
+
+/* =========================================
+   添加卡片
+========================================= */
+.add-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    min-height: 160px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.add-card:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.add-card:active {
+    background: rgba(10, 132, 255, 0.2);
+    border-color: var(--primary-color);
+    transform: scale(0.95);
+}
+
+.add-icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 200;
+    transition: color 0.3s;
+}
+
+.add-card:hover .add-icon { color: rgba(255, 255, 255, 0.8); }
+.add-card:active .add-icon { color: var(--primary-color); }
+
+/* =========================================
+   水波纹特效
+========================================= */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ripple.ripple-green { background: rgba(50, 215, 75, 0.15); }
+.ripple.ripple-grey { background: rgba(255, 255, 255, 0.05); }
+
+@keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* =========================================
+   弹窗模块 (深色毛玻璃)
+========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.modal-overlay.active { display: flex; opacity: 1; }
+
+.modal-content {
+    width: 90%;
+    max-width: 450px;
+    padding: 25px;
+    background: rgba(30, 30, 30, 0.75);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.modal-overlay.active .modal-content { transform: scale(1); }
+
+.modal-title {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.search-box { margin-bottom: 12px; }
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 1rem;
+    outline: 0;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.city-list {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.city-list::-webkit-scrollbar { width: 6px; }
+.city-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+
+.city-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: background 0.2s;
+}
+
+.city-item:last-child { border-bottom: none; }
+.city-item:hover { background: rgba(255, 255, 255, 0.1); }
+
+.city-item.selected {
+    background: rgba(10, 132, 255, 0.2);
+    color: #fff;
+    font-weight: 600;
+}
+
+.city-item-name { font-size: 1rem; }
+.city-item-flag { margin-right: 10px; font-size: 1.3rem; }
+
+.btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-cancel:hover { background: rgba(255, 255, 255, 0.2); }
+
+.btn-confirm:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* =========================================
+   右上角悬浮按钮组
+========================================= */
+.float-btn-group {
+    position: absolute;
+    /* 适配 iOS 独立 PWA 模式下的安全距离 */
+    top: max(20px, env(safe-area-inset-top)); 
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 101;
+}
+
+.float-btn {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    font-family: inherit;
+    margin: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.float-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.float-btn:active {
+    transform: scale(0.95);
+}
+
+.doubao-icon { font-size: 1.1rem; }
+
+/* =========================================
+   背景视频及移动端适配
+========================================= */
+#sakura-video {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    mix-blend-mode: screen;
+    transition: opacity 0.5s;
+    transform: scale(1.1);
+}
+
+#sakura-video.playing { opacity: 0.8; }
+
+@media (max-width: 600px) {
+    .main-card .time { font-size: 3.2rem; }
+    .grid-container { grid-template-columns: 1fr; }
+    .delete-btn { opacity: 1; background: rgba(255, 255, 255, 0.2); }
+    
+    .time-machine {
+        width: 90%;
+        flex-wrap: wrap;
+        border-radius: 16px;
+    }
+    
+    .float-btn-group {
+        position: relative;
+        top: auto; right: auto;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0 10px;
+    }
+    
+    .float-btn {
+        margin-left: 0;
+        width: auto;
+        flex: 1 1 40%;
+        padding: 12px 5px;
+    }
 }
