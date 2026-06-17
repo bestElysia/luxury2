@@ -1,3 +1,4 @@
+
 :root {
     --bg-color: #f5f7fa;
     --bg-image: none;
@@ -635,6 +636,7 @@ h1 {
     z-index: 101;
 }
 
+/* 🟢 修改过的 PC 端按钮样式，移除了固定宽度限制 */
 .float-btn {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
@@ -652,8 +654,6 @@ h1 {
     gap: 4px;
     border: 1px solid rgba(255, 255, 255, 0.6);
     cursor: pointer;
-    width: fit-content;
-    margin-left: auto;
     box-sizing: border-box;
     font-family: inherit;
     line-height: 1.2;
