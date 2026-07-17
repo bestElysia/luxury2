@@ -54,6 +54,7 @@ function init() {
     initSortable();
     initTimeMachine();
     initTheme();
+    initMainSearch(); // 🌟 新增：初始化主页搜索框
     updateAllClocks();
     setInterval(updateAllClocks, 1000);
     setInterval(refreshAllWeather, 1800000);
@@ -86,7 +87,7 @@ function init() {
 
     // 全局点击事件：控制动态背景暂停/播放
     document.body.addEventListener('click', (e) => {
-        const isInteractive = e.target.closest('.city-card, .main-card, .time-machine, .float-btn, .modal-content, .add-card');
+        const isInteractive = e.target.closest('.city-card, .main-card, .time-machine, .float-btn, .modal-content, .add-card, .global-search-wrapper');
         const isDynamicTheme = document.body.classList.contains('animate-bg');
         if (!isInteractive && isDynamicTheme) {
             document.body.classList.toggle('bg-paused');
@@ -554,6 +555,98 @@ function getWeatherEmoji(code) {
     if (code >= 85 && code <= 86) return "❄️";
     if (code >= 95) return "⛈️";
     return "🌡️";
+}
+
+// --- 🌟 新增：主页全局搜索框交互逻辑 ---
+function initMainSearch() {
+    const mainSearchInput = document.getElementById('mainSearchInput');
+    const mainSearchResults = document.getElementById('mainSearchResults');
+
+    if (!mainSearchInput || !mainSearchResults) return;
+
+    // 1. 监听输入事件，进行模糊搜索
+    mainSearchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        // 如果输入为空，隐藏下拉框
+        if (!query) {
+            mainSearchResults.style.display = 'none';
+            mainSearchResults.innerHTML = '';
+            return;
+        }
+
+        // 模糊搜索逻辑：匹配城市名、标签(中英文/拼音)
+        const matchedCities = cityDatabase.filter(city => {
+            const searchStr = `${city.name} ${city.tags || ''} ${city.id}`.toLowerCase();
+            return searchStr.includes(query);
+        });
+
+        renderMainSearchResults(matchedCities);
+    });
+
+    // 2. 渲染下拉菜单的卡片
+    function renderMainSearchResults(cities) {
+        if (cities.length === 0) {
+            mainSearchResults.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">未能找到匹配的城市，请尝试其他拼音或英文</div>';
+            mainSearchResults.style.display = 'block';
+            return;
+        }
+
+        // 提取当前已添加城市的 ID 数组，用于判断是否已添加
+        const currentIds = currentCities.map(c => c.id);
+
+        // 遍历匹配到的城市，生成下拉列表
+        mainSearchResults.innerHTML = cities.map(city => {
+            const isAdded = currentIds.includes(city.id);
+            
+            return `
+                <div class="search-result-item ${isAdded ? 'already-added' : ''}" data-id="${city.id}">
+                    <div class="city-info">
+                        <span class="flag">${city.flag}</span>
+                        <span class="name">${city.name}</span>
+                    </div>
+                    <span class="status">${isAdded ? '已在看板中' : '点击添加 +'}</span>
+                </div>
+            `;
+        }).join('');
+
+        mainSearchResults.style.display = 'block';
+
+        // 3. 为“未添加”的城市绑定点击事件
+        const items = mainSearchResults.querySelectorAll('.search-result-item:not(.already-added)');
+        items.forEach(item => {
+            item.addEventListener('click', function() {
+                const cityId = this.getAttribute('data-id');
+                const cityObj = cityDatabase.find(c => c.id === cityId);
+                
+                // 将新城市对象加入数组
+                if (cityObj && !currentIds.includes(cityId)) {
+                    currentCities.push(cityObj);
+                    saveData();
+                    renderGrid();
+                    updateAllClocks(); // 立即更新新卡片的时间
+                }
+
+                // 添加完成后，清空搜索框并隐藏下拉菜单
+                mainSearchInput.value = '';
+                mainSearchResults.style.display = 'none';
+            });
+        });
+    }
+
+    // 4. 点击页面空白处，自动收起下拉菜单
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.global-search-wrapper')) {
+            mainSearchResults.style.display = 'none';
+        }
+    });
+    
+    // 5. 如果输入框有内容，点击输入框时再次显示下拉菜单
+    mainSearchInput.addEventListener('focus', () => {
+        if (mainSearchInput.value.trim() && mainSearchResults.innerHTML !== '') {
+            mainSearchResults.style.display = 'block';
+        }
+    });
 }
 
 // 启动
