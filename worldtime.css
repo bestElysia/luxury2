@@ -1,7 +1,7 @@
-
 :root {
     --bg-color: #f5f7fa;
-    --bg-image: none;
+    /* 增加多个色彩，模拟 Apple Music 柔和多色渐变 */
+    --bg-image: linear-gradient(-45deg, #ff3b30, #ff2d55, #af52de, #5e5ce6, #32ade6, #34c759);
     --card-bg: #ffffff;
     --primary-color: #1890ff;
     --text-main: #2c3e50;
@@ -15,7 +15,8 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-color);
     background-image: var(--bg-image);
-    background-size: 300% 300%;
+    /* 放大背景尺寸以支持大范围流动 */
+    background-size: 400% 400%;
     background-attachment: fixed;
     margin: 0;
     padding: 20px;
@@ -27,14 +28,18 @@ body {
     animation-play-state: running;
 }
 
+/* 优化动画轨迹，模拟 Apple Music 随机缓慢游荡的效果 */
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
+    25% { background-position: 50% 100%; }
     50% { background-position: 100% 50%; }
+    75% { background-position: 50% 0%; }
     100% { background-position: 0% 50%; }
 }
 
 body.animate-bg {
-    animation: gradientAnimation 12s ease infinite;
+    /* 动画时间延长至 45s，效果极度平缓丝滑 */
+    animation: gradientAnimation 45s ease-in-out infinite;
 }
 
 /* --- 新增：暂停状态 --- */
@@ -103,7 +108,10 @@ h1 {
     -webkit-backdrop-filter: blur(16px);
     padding: 10px 20px;
     border-radius: 50px;
-    width: fit-content;
+    /* 统一宽度：与 main-card 等宽对齐 */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;
     box-shadow: var(--shadow);
@@ -152,8 +160,10 @@ h1 {
 }
 
 .main-card {
+    /* 统一宽度：作为标杆 */
     width: 100%;
     max-width: 600px;
+    box-sizing: border-box;
     padding: 30px;
     border-radius: 16px;
     box-shadow: var(--shadow);
@@ -636,7 +646,6 @@ h1 {
     z-index: 101;
 }
 
-/* 🟢 修改过的 PC 端按钮样式，移除了固定宽度限制 */
 .float-btn {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(8px);
@@ -659,7 +668,7 @@ h1 {
     line-height: 1.2;
     margin: 0;
     -webkit-appearance: none;
-    white-space: nowrap; /* 修复点1：强制内容绝不换行 */
+    white-space: nowrap;
 }
 
 .float-btn:hover {
@@ -691,7 +700,8 @@ h1 {
     }
 
     .time-machine {
-        width: 90%;
+        /* 取消了强制 90%，现在跟 main-card 保持绝对一致 */
+        width: 100%;
         flex-wrap: wrap;
         border-radius: 16px;
     }
@@ -703,25 +713,28 @@ h1 {
         flex-direction: row;
         justify-content: center;
         margin-bottom: 20px;
-        flex-wrap: wrap; /* 修复点2：允许在空间不够时换行 */
-        gap: 12px; /* 修复点3：增加统一的间距 */
-        padding: 0 10px; /* 修复点4：防止贴紧屏幕边缘 */
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 0 10px;
     }
 
     .float-btn {
         margin-left: 0;
-        width: auto; /* 修复点5：覆盖宽度的自适应设定 */
-        flex: 1 1 40%; /* 修复点6：让按钮形成整齐的 2x2 宫格排列 */
-        padding: 12px 5px; /* 修复点7：微调内边距，使手机端点击热区更舒适 */
+        width: auto;
+        flex: 1 1 40%;
+        padding: 12px 5px;
     }
 }
 
 /* --- 新增：主页全局搜索框样式 --- */
 .global-search-wrapper {
-    max-width: 600px; /* 和北京时间卡片保持等宽 */
+    /* 统一宽度：与 main-card 对齐 */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
     margin: 0 auto 30px auto;
     position: relative;
-    z-index: 105; /* 确保下拉菜单能盖住下面的城市卡片 */
+    z-index: 105;
 }
 
 .global-search-wrapper input {
@@ -815,4 +828,3 @@ h1 {
 .search-result-item.already-added:hover {
     background: transparent;
 }
-
