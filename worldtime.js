@@ -5,6 +5,46 @@ let selectedCityId = null;
 const weatherCache = {};
 const CACHE_DURATION = 1200000;
 
+// --- 🌟 新增：防抖函数 (Debounce) ---
+function debounce(func, delay = 300) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
+// --- 🌟 新增：统一的高级搜索匹配逻辑 ---
+function matchCity(city, query) {
+    const q = query.toLowerCase().trim();
+    if (!q) return true;
+
+    const name = (city.name || "").toLowerCase();        // 中文名，如 "纽约"
+    const id = (city.id || "").toLowerCase();            // 英文ID，如 "new_york"
+    const tags = (city.tags || "").toLowerCase();        // 标签，如 "美国 usa"
+    
+    // 1. 提取纯数字用于精确区号比对 (解决用户输入 1、+1、001 的差异)
+    const phoneDigits = (city.phone || "").replace(/\D/g, "");
+    const queryDigits = q.replace(/\D/g, "");
+
+    // 2. 智能缩写匹配支持 (例如输入 "ny" 匹配 "new_york" 或 "la" 匹配 "los_angeles")
+    const acronym = id.split('_').map(word => word[0]).join('');
+
+    const isNameMatch = name.includes(q);
+    // 允许用户输入带空格的英文，例如 "new york" 可以匹配 "new_york"
+    const isIdMatch = id.includes(q) || id.replace(/_/g, " ").includes(q);
+    const isTagMatch = tags.includes(q);
+    const isAcronymMatch = acronym.includes(q);
+    
+    // 3. 区号匹配：如果是纯数字输入则按开头匹配，否则按原文包含匹配
+    const isPhoneMatch = (queryDigits && phoneDigits.startsWith(queryDigits)) || (city.phone || "").includes(q);
+
+    // 只要满足任意一种情况，即视为匹配成功
+    return isNameMatch || isIdMatch || isTagMatch || isAcronymMatch || isPhoneMatch;
+}
+
 // --- 主题配置 ---
 const themes = [
     // 云端
@@ -54,16 +94,14 @@ function init() {
     initSortable();
     initTimeMachine();
     initTheme();
-    initMainSearch(); // 🌟 新增：初始化主页搜索框
+    initMainSearch(); 
     updateAllClocks();
     setInterval(updateAllClocks, 1000);
     setInterval(refreshAllWeather, 1800000);
 
-    // --- 修复部分：绑定事件监听器 ---
-    
-    // 1. 搜索框输入事件
+    // 1. 搜索框输入事件 (🌟 应用 300ms 防抖)
     if (searchInput) {
-        searchInput.addEventListener("input", filterCities);
+        searchInput.addEventListener("input", debounce(filterCities, 300));
     }
 
     // 2. 确认添加按钮点击事件
@@ -77,8 +115,6 @@ function init() {
             if (e.target === modal) closeModal();
         });
     }
-
-    // --- 绑定其他事件 ---
 
     // 主题切换按钮
     if (themeBtn) {
@@ -201,7 +237,7 @@ function initTimeMachine() {
         }
     });
 
-    // 监听重置按钮 (补充的修复)
+    // 监听重置按钮
     if (resetBtn) {
         resetBtn.addEventListener("click", resetRealTime);
     }
@@ -330,14 +366,8 @@ function renderCityList(query = "") {
     let filtered = cityDatabase.filter(c => !currentIds.includes(c.id));
     
     if (query) {
-        const q = query.trim().toLowerCase();
-        const phoneQ = q.replace(/^\+/, "");
-        filtered = filtered.filter(c => {
-            const nameMatch = c.name.toLowerCase().includes(q);
-            const phoneMatch = c.phone.replace("+", "").startsWith(phoneQ);
-            const tagsMatch = (c.tags || "").toLowerCase().includes(q);
-            return nameMatch || phoneMatch || tagsMatch;
-        });
+        // 🌟 优化：接入统一的高级搜索逻辑
+        filtered = filtered.filter(c => matchCity(c, query));
     }
     
     filtered.sort((a, b) => a.name.localeCompare(b.name, "zh"));
@@ -393,25 +423,24 @@ function removeCity(id, event) {
 
 function initSortable() {
     const grid = document.getElementById("clocks-grid");
-    // 确保你的 HTML 中已经加载了 SortableJS 库
-    new Sortable(grid, {
-        animation: 200,
-        ghostClass: "sortable-ghost",
-        // --- 优化部分开始 ---
-        delay: 200,             // 触屏设备（手机）长按 200ms 才能拖动，防止滚动时误触
-        delayOnTouchOnly: true, // 桌面设备（鼠标）无延迟，点击即拖动，体验更流畅
-        // --- 优化部分结束 ---
-        filter: "[data-no-drag]",
-        preventOnFilter: false,
-        onEnd: function (evt) {
-            const newOrderIds = [];
-            grid.querySelectorAll(".city-card").forEach(card => {
-                newOrderIds.push(card.getAttribute("data-id"));
-            });
-            currentCities = newOrderIds.map(id => cityDatabase.find(c => c.id === id)).filter(Boolean);
-            saveData();
-        }
-    });
+    if(typeof Sortable !== 'undefined') {
+        new Sortable(grid, {
+            animation: 200,
+            ghostClass: "sortable-ghost",
+            delay: 200,             
+            delayOnTouchOnly: true, 
+            filter: "[data-no-drag]",
+            preventOnFilter: false,
+            onEnd: function (evt) {
+                const newOrderIds = [];
+                grid.querySelectorAll(".city-card").forEach(card => {
+                    newOrderIds.push(card.getAttribute("data-id"));
+                });
+                currentCities = newOrderIds.map(id => cityDatabase.find(c => c.id === id)).filter(Boolean);
+                saveData();
+            }
+        });
+    }
 }
 
 // --- 时钟核心逻辑 ---
@@ -564,30 +593,27 @@ function initMainSearch() {
 
     if (!mainSearchInput || !mainSearchResults) return;
 
-    // 1. 监听输入事件，进行模糊搜索
-    mainSearchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
+    // 1. 监听输入事件，加入 300ms 防抖和高级匹配逻辑
+    mainSearchInput.addEventListener('input', debounce((e) => {
+        const query = e.target.value;
         
         // 如果输入为空，隐藏下拉框
-        if (!query) {
+        if (!query.trim()) {
             mainSearchResults.style.display = 'none';
             mainSearchResults.innerHTML = '';
             return;
         }
 
-        // 模糊搜索逻辑：匹配城市名、标签(中英文/拼音)
-        const matchedCities = cityDatabase.filter(city => {
-            const searchStr = `${city.name} ${city.tags || ''} ${city.id}`.toLowerCase();
-            return searchStr.includes(query);
-        });
+        // 🌟 优化：使用统一的高级搜索逻辑
+        const matchedCities = cityDatabase.filter(city => matchCity(city, query));
 
         renderMainSearchResults(matchedCities);
-    });
+    }, 300));
 
     // 2. 渲染下拉菜单的卡片
     function renderMainSearchResults(cities) {
         if (cities.length === 0) {
-            mainSearchResults.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">未能找到匹配的城市，请尝试其他拼音或英文</div>';
+            mainSearchResults.innerHTML = '<div style="padding: 20px; color: #999; text-align: center;">未能找到匹配的城市，请尝试其他拼音、英文或区号</div>';
             mainSearchResults.style.display = 'block';
             return;
         }
