@@ -11,11 +11,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link rel="stylesheet" href="worldtime.css">
+    <!-- 加上 ?v=2 强制浏览器重新加载最新的 CSS，解决没生效的问题 -->
+    <link rel="stylesheet" href="worldtime.css?v=2">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" defer></script>
 </head>
-<body>
+<!-- 这里增加了 animate-bg 类，让多色渐变流体背景默认开启 -->
+<body class="animate-bg">
     <nav class="float-btn-group">
         <a href="https://www.doubao.com/chat/?channel=browser_landing_page" target="_blank" rel="noopener noreferrer" class="float-btn">
             <span class="doubao-icon">(✿◡‿◡) 豆包</span>
@@ -38,6 +40,11 @@
         <h1>世界时间 & 天气看板</h1>
         <div class="tip">长按拖拽排序 · 点击卡片切换标记状态 · 天气每30分钟自动刷新</div>
         
+        <section class="global-search-wrapper">
+            <input type="text" id="mainSearchInput" placeholder="搜索你想添加的国家或城市（支持中英文、拼音，如：美、纽约、ny、33）" autocomplete="off">
+            <div id="mainSearchResults" class="search-results-dropdown" style="display: none;"></div>
+        </section>
+
         <section class="time-machine">
             <span class="tm-label">📅 预约推算:</span>
             <input type="datetime-local" id="simTimeInput">
@@ -52,18 +59,9 @@
             </div>
         </section>
         
-                    <section class="global-search-wrapper">
-            <input type="text" id="mainSearchInput" placeholder="搜索你想添加的国家或城市（支持中英文、拼音，如：美、纽约、ny、33）" autocomplete="off">
-            <div id="mainSearchResults" class="search-results-dropdown" style="display: none;"></div>
-        </section>
-     
-
-        
-        
-        
-        
         <section class="grid-container" id="clocks-grid">
-            </section>
+            <!-- 城市卡片将由 JS 动态生成 -->
+        </section>
     </main>
 
     <div class="modal-overlay" id="addModal">
@@ -84,7 +82,8 @@
         <source src="assets/sakura.mp4" type="video/mp4">
     </video>
 
-    <script src="cities.js"></script>
-    <script src="worldtime.js"></script>
+    <!-- 同样加版本号防缓存 -->
+    <script src="cities.js?v=2"></script>
+    <script src="worldtime.js?v=2"></script>
 </body>
 </html>
